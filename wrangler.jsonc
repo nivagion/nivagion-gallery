@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "atelier-nivagion",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nivagion-gallery-db",
+      "database_id": "replace-with-cloudflare-d1-database-id",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ARTWORK_IMAGES",
+      "bucket_name": "nivagion-artwork-images"
+    }
+  ],
+  "vars": {
+    "SITE_URL": "https://nivagion.com",
+    "ADMIN_EMAIL": "admin@example.com",
+    "ADMIN_DEV_BYPASS": "false",
+    "TURNSTILE_SITE_KEY": "",
+    "TURNSTILE_SECRET_KEY": ""
+  }
+}

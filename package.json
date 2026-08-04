@@ -1,0 +1,44 @@
+{
+  "name": "nivagion-gallery",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "node scripts/run-e2e.mjs",
+    "cf:build": "opennextjs-cloudflare build",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply nivagion-gallery-db --local",
+    "db:migrate:prod": "wrangler d1 migrations apply nivagion-gallery-db --remote",
+    "db:seed:local": "wrangler d1 execute nivagion-gallery-db --local --file=./migrations/0002_seed_demo.sql"
+  },
+  "dependencies": {
+    "@opennextjs/cloudflare": "latest",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.536.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@eslint/eslintrc": "^3.3.1",
+    "@playwright/test": "^1.54.2",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "latest",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

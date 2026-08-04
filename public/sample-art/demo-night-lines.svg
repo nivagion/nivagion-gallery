@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Demo reserved artwork placeholder</title>
+  <desc id="desc">A neutral placeholder image for testing reserved artwork.</desc>
+  <rect width="1200" height="1400" fill="#dad6ce"/>
+  <rect x="180" y="150" width="840" height="1080" fill="#272522"/>
+  <path d="M250 980 C440 880 510 660 450 455 C625 625 760 535 900 275" fill="none" stroke="#f0ede7" stroke-width="20" stroke-linecap="square"/>
+  <path d="M300 315 L895 1060" stroke="#b3aa9c" stroke-width="16" stroke-linecap="square"/>
+  <path d="M360 1115 L900 840" stroke="#7a837a" stroke-width="24" stroke-linecap="square"/>
+  <text x="90" y="1325" fill="#191716" font-family="Arial, sans-serif" font-size="40">DEMO PLACEHOLDER</text>
+</svg>

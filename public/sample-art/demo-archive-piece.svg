@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Demo sold artwork placeholder</title>
+  <desc id="desc">A neutral placeholder image for testing archived sold artwork.</desc>
+  <rect width="1200" height="1600" fill="#eeeae2"/>
+  <path d="M280 1280 L520 260 L900 1320" fill="none" stroke="#191716" stroke-width="30" stroke-linecap="square" stroke-linejoin="bevel"/>
+  <path d="M380 720 L780 720" stroke="#8c8175" stroke-width="18"/>
+  <path d="M505 420 L690 1110" stroke="#4e5952" stroke-width="24"/>
+  <text x="90" y="1495" fill="#191716" font-family="Arial, sans-serif" font-size="40">DEMO PLACEHOLDER</text>
+</svg>

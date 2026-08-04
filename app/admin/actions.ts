@@ -1,0 +1,159 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import {
+  duplicateArtwork,
+  getArtworkById,
+  updateArtworkOrder,
+  updateArtworkStatus,
+  upsertArtwork,
+} from "../../lib/db/artworks";
+import { updateOrderStatus } from "../../lib/db/orders";
+import { updateSiteSettings } from "../../lib/db/settings";
+import { defaultSiteSettings } from "../../lib/site";
+import { id } from "../../lib/db/client";
+import { assertSameOrigin, requireAdmin } from "../../lib/security";
+import { slugify } from "../../lib/slug";
+import { artworkFormSchema, orderUpdateSchema } from "../../lib/validation/forms";
+import type { SiteSettings } from "../../lib/types";
+
+export async function saveArtwork(_: unknown, formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const title = String(formData.get("title") ?? "");
+  const parsed = artworkFormSchema.safeParse({
+    id: formData.get("id") || undefined,
+    title,
+    slug: formData.get("slug") || slugify(title),
+    subtitle: formData.get("subtitle"),
+    year: formData.get("year"),
+    medium: formData.get("medium"),
+    surface: formData.get("surface"),
+    width_cm: formData.get("width_cm"),
+    height_cm: formData.get("height_cm"),
+    description: formData.get("description"),
+    price_cents: formData.get("price_eur") ?? "",
+    currency: formData.get("currency") || "EUR",
+    status: formData.get("status"),
+    is_featured: formData.has("is_featured"),
+    is_published: formData.has("is_published"),
+    revolut_payment_url: formData.get("revolut_payment_url"),
+  });
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Check artwork fields." };
+  }
+  const artworkId = parsed.data.id ?? id("art");
+  try {
+    await upsertArtwork({
+      id: artworkId,
+      slug: parsed.data.slug,
+      title: parsed.data.title,
+      subtitle: parsed.data.subtitle,
+      year: parsed.data.year,
+      medium: parsed.data.medium,
+      surface: parsed.data.surface,
+      width_cm: parsed.data.width_cm,
+      height_cm: parsed.data.height_cm,
+      description: parsed.data.description,
+      price_cents: parsed.data.price_cents,
+      currency: parsed.data.currency,
+      status: parsed.data.status,
+      is_featured: parsed.data.is_featured,
+      is_published: parsed.data.is_published,
+      published_at: null,
+      reserved_until: null,
+      revolut_payment_url: parsed.data.revolut_payment_url,
+    });
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : "Artwork could not be saved." };
+  }
+  revalidatePath("/");
+  revalidatePath("/works");
+  revalidatePath("/archive");
+  redirect(`/admin/artworks/${artworkId}`);
+}
+
+export async function archiveArtwork(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  await updateArtworkStatus(String(formData.get("id")), "archived");
+  revalidatePath("/admin/artworks");
+}
+
+export async function duplicateArtworkAction(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const copyId = await duplicateArtwork(String(formData.get("id")));
+  revalidatePath("/admin/artworks");
+  redirect(`/admin/artworks/${copyId}`);
+}
+
+export async function reorderArtworks(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const ids = String(formData.get("ids") ?? "")
+    .split(",")
+    .filter(Boolean);
+  await updateArtworkOrder(ids);
+  revalidatePath("/admin/artworks");
+  revalidatePath("/works");
+}
+
+export async function saveOrder(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const parsed = orderUpdateSchema.safeParse({
+    paymentStatus: formData.get("paymentStatus"),
+    fulfilmentStatus: formData.get("fulfilmentStatus"),
+    internalNotes: formData.get("internalNotes"),
+  });
+  if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Invalid order update.");
+  await updateOrderStatus({
+    orderId: String(formData.get("orderId")),
+    paymentStatus: parsed.data.paymentStatus,
+    fulfilmentStatus: parsed.data.fulfilmentStatus,
+    internalNotes: parsed.data.internalNotes,
+  });
+  revalidatePath("/admin/orders");
+  revalidatePath("/works");
+}
+
+export async function saveSettings(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const settings: SiteSettings = {
+    ...defaultSiteSettings,
+    siteDescription: String(formData.get("siteDescription") ?? defaultSiteSettings.siteDescription),
+    contactEmail: String(formData.get("contactEmail") ?? defaultSiteSettings.contactEmail),
+    homepageIntroduction: String(formData.get("homepageIntroduction") ?? defaultSiteSettings.homepageIntroduction),
+    artistBiography: String(formData.get("artistBiography") ?? defaultSiteSettings.artistBiography),
+    studioLocationWording: String(formData.get("studioLocationWording") ?? defaultSiteSettings.studioLocationWording),
+    defaultShippingMessage: String(formData.get("defaultShippingMessage") ?? defaultSiteSettings.defaultShippingMessage),
+    croatianShippingCents: Math.max(0, Math.round(Number(String(formData.get("croatianShippingEur") ?? "0").replace(",", ".")) * 100)),
+    internationalShippingMode: String(formData.get("internationalShippingMode") ?? defaultSiteSettings.internationalShippingMode),
+    announcementText: String(formData.get("announcementText") ?? ""),
+    instagramUrl: String(formData.get("instagramUrl") ?? ""),
+    otherSocialUrl: String(formData.get("otherSocialUrl") ?? ""),
+    returnConditions: String(formData.get("returnConditions") ?? defaultSiteSettings.returnConditions),
+    commissionAvailability: String(formData.get("commissionAvailability") ?? defaultSiteSettings.commissionAvailability),
+    customDomainEmail: String(formData.get("customDomainEmail") ?? defaultSiteSettings.customDomainEmail),
+    legalSellerInformation: String(formData.get("legalSellerInformation") ?? defaultSiteSettings.legalSellerInformation),
+    croatianBusinessTaxInformation: String(formData.get("croatianBusinessTaxInformation") ?? defaultSiteSettings.croatianBusinessTaxInformation),
+  };
+  await updateSiteSettings(settings);
+  revalidatePath("/");
+  revalidatePath("/about");
+  revalidatePath("/contact");
+  revalidatePath("/shipping-and-returns");
+}
+
+export async function setSoldFromOrder(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const artwork = await getArtworkById(String(formData.get("artworkId")));
+  if (!artwork) throw new Error("Artwork not found.");
+  await updateArtworkStatus(artwork.id, "sold");
+  revalidatePath("/admin/orders");
+  revalidatePath("/works");
+}

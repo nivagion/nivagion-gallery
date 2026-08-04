@@ -1,0 +1,47 @@
+"use client";
+
+import { GripVertical, Save } from "lucide-react";
+import { useState } from "react";
+import { reorderArtworks } from "../../app/admin/actions";
+import type { ArtworkWithImages } from "../../lib/types";
+
+export function ArtworkOrderList({ artworks }: { artworks: ArtworkWithImages[] }) {
+  const [items, setItems] = useState(artworks);
+  const [dragged, setDragged] = useState<string | null>(null);
+
+  function move(targetId: string) {
+    if (!dragged || dragged === targetId) return;
+    const current = [...items];
+    const from = current.findIndex((item) => item.id === dragged);
+    const to = current.findIndex((item) => item.id === targetId);
+    const [item] = current.splice(from, 1);
+    current.splice(to, 0, item);
+    setItems(current);
+  }
+
+  return (
+    <form action={reorderArtworks} className="grid gap-3">
+      <input type="hidden" name="ids" value={items.map((item) => item.id).join(",")} />
+      {items.map((artwork) => (
+        <div
+          key={artwork.id}
+          draggable
+          onDragStart={() => setDragged(artwork.id)}
+          onDragOver={(event) => {
+            event.preventDefault();
+            move(artwork.id);
+          }}
+          className="flex items-center gap-3 border border-[#d7d0c5] bg-[#f8f4ed] p-3"
+        >
+          <GripVertical size={18} aria-hidden />
+          <span className="font-medium">{artwork.title}</span>
+          <span className="ml-auto text-sm text-[#746f67]">{artwork.status}</span>
+        </div>
+      ))}
+      <button className="button button-secondary justify-self-start">
+        <Save size={18} aria-hidden />
+        Save order
+      </button>
+    </form>
+  );
+}

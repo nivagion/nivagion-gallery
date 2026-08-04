@@ -1,0 +1,17 @@
+.next/
+.open-next/
+.wrangler/
+.npm-cache/
+node_modules/
+.env*
+.dev.vars
+!.env.example
+!.dev.vars.example
+coverage/
+playwright-report/
+test-results/
+tsconfig.tsbuildinfo
+debug.log
+AGENTS.md
+CLAUDE.md
+*.local
