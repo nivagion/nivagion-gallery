@@ -33,7 +33,7 @@ export async function submitContactForm(_: unknown, formData: FormData) {
   } catch {
     return {
       ok: false,
-      message: "Messages require the D1 database locally. Run through Wrangler after migrations, or email the studio directly.",
+      message: "Messages require the D1 database locally. Run through Wrangler after migrations, or email me directly.",
     };
   }
   redirect("/contact?sent=1");

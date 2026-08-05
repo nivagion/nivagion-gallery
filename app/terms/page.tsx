@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage } from "../../components/public/LegalPage";
+import { getLocale, t } from "../../lib/i18n";
 import { canonical } from "../../lib/site";
 
 export const metadata: Metadata = {
@@ -7,13 +8,13 @@ export const metadata: Metadata = {
   alternates: { canonical: canonical("/terms") },
 };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const c = t(await getLocale());
   return (
-    <LegalPage title="Terms of Sale">
-      <p>This editable draft covers original artwork purchase requests, manual confirmation and order fulfilment.</p>
-      <p>Artwork prices are shown in EUR and are recalculated server-side when an order is created.</p>
-      <p>LEGAL/TAX REVIEW REQUIRED: add seller details, Croatian business information, VAT status if applicable and required consumer notices before launch.</p>
-      <p>Payment through a stored Revolut link does not automatically mark an order paid until the admin confirms it.</p>
+    <LegalPage title={c.legal.termsTitle}>
+      {c.legal.terms.map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
     </LegalPage>
   );
 }

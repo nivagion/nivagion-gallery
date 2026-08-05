@@ -8,6 +8,7 @@ import { getArtworkBySlug } from "../../../lib/db/artworks";
 import { getSiteSettings } from "../../../lib/db/settings";
 import { formatMoney } from "../../../lib/format";
 import { imageUrl } from "../../../lib/images";
+import { getLocale, localizedSettings, t } from "../../../lib/i18n";
 import { canonical } from "../../../lib/site";
 
 type Props = {
@@ -25,18 +26,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CheckoutPage({ params }: Props) {
   const { slug } = await params;
+  const locale = await getLocale();
+  const c = t(locale);
   const artwork = await getArtworkBySlug(slug);
   if (!artwork) notFound();
-  const settings = await getSiteSettings();
+  const settings = localizedSettings(await getSiteSettings(), locale);
   if (artwork.status !== "available") {
     return (
       <>
         <SiteHeader />
         <main className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h1 className="editorial-title text-4xl">Artwork unavailable</h1>
-          <p className="mt-4 text-[#746f67]">This work is currently {artwork.status} and cannot be purchased.</p>
+          <h1 className="editorial-title text-4xl">{c.checkout.unavailable}</h1>
+          <p className="mt-4 text-[#084A24]">{c.checkout.unavailableText}</p>
           <Link href={`/works/${artwork.slug}`} className="button mt-8">
-            Return to artwork
+            {c.common.backToWorks}
           </Link>
         </main>
         <SiteFooter settings={settings} />
@@ -51,16 +54,17 @@ export default async function CheckoutPage({ params }: Props) {
         <aside>
           {primary ? <img src={imageUrl(primary.object_key)} alt={primary.alt_text} className="w-full" /> : null}
           <h1 className="editorial-title mt-6 text-4xl">{artwork.title}</h1>
-          <p className="mt-2 text-[#746f67]">{formatMoney(artwork.price_cents, artwork.currency)}</p>
-          <p className="mt-6 text-sm leading-6 text-[#746f67]">
-            No card information is collected on this website. If a Revolut payment link is configured, payment happens on Revolut after this request is saved.
+          <p className="mt-2 text-[#084A24]">{formatMoney(artwork.price_cents, artwork.currency)}</p>
+          <p className="mt-6 text-sm leading-6 text-[#084A24]">
+            {c.checkout.noCards}
           </p>
         </aside>
         <section>
-          <h2 className="editorial-title text-4xl">Purchase request</h2>
-          <p className="mt-4 max-w-2xl leading-7 text-[#746f67]">{settings.defaultShippingMessage}</p>
+          <h2 className="editorial-title text-4xl">{c.checkout.title}</h2>
+          <p className="mt-4 max-w-2xl leading-7 text-[#084A24]">{settings.defaultShippingMessage}</p>
+          <p className="mt-3 text-sm text-[#E7390D]">{c.common.originalNotPrint}</p>
           <div className="mt-8">
-            <CheckoutForm slug={artwork.slug} />
+            <CheckoutForm slug={artwork.slug} locale={locale} />
           </div>
         </section>
       </main>

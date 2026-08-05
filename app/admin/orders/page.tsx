@@ -16,10 +16,10 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
     <div className="grid gap-8">
       <div>
         <h1 className="editorial-title text-4xl">Orders</h1>
-        <p className="mt-2 text-[#746f67]">Search purchase requests, payment state and fulfilment.</p>
+        <p className="mt-2 text-[#084A24]">Search purchase requests, payment state and fulfilment.</p>
       </div>
       <form className="flex max-w-xl gap-2">
-        <input className="field" name="q" defaultValue={q} placeholder="Reference, customer, email or artwork" />
+        <input className="field" name="q" defaultValue={q} aria-label="Reference, customer, email or artwork" />
         <button className="button" title="Search orders">
           <Search size={18} aria-hidden />
           Search
@@ -27,11 +27,11 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
       </form>
       <div className="grid gap-5">
         {orders.map((order) => (
-          <article key={order.id} className="border border-[#d7d0c5] bg-[#f8f4ed] p-5">
+          <article key={order.id} className="border border-[#084A24]/25 bg-[#F2EDD5] p-5">
             <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
               <div>
                 <h2 className="editorial-title text-2xl">{order.public_reference}</h2>
-                <p className="mt-2 text-sm text-[#746f67]">
+                <p className="mt-2 text-sm text-[#084A24]">
                   {order.customer_full_name} · {order.email} · {formatDateTime(order.created_at)}
                 </p>
                 <p className="mt-4">{order.artwork_title}</p>
@@ -88,7 +88,7 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
             </div>
           </article>
         ))}
-        {!orders.length ? <p className="border border-[#d7d0c5] p-6 text-[#746f67]">No orders found.</p> : null}
+        {!orders.length ? <p className="border border-[#084A24]/25 p-6 text-[#084A24]">No orders found.</p> : null}
       </div>
     </div>
   );
@@ -97,7 +97,7 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid grid-cols-[7rem_1fr] gap-3">
-      <dt className="text-[#746f67]">{label}</dt>
+      <dt className="text-[#084A24]">{label}</dt>
       <dd className="break-words">{value}</dd>
     </div>
   );

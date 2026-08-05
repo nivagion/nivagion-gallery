@@ -9,6 +9,7 @@ import { getAdjacentArtworks, getArtworkBySlug } from "../../../lib/db/artworks"
 import { getSiteSettings } from "../../../lib/db/settings";
 import { formatDimensions, formatMoney } from "../../../lib/format";
 import { imageUrl } from "../../../lib/images";
+import { getLocale, localizedSettings, t } from "../../../lib/i18n";
 import { canonical, siteConfig } from "../../../lib/site";
 
 type Props = {
@@ -34,9 +35,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArtworkPage({ params }: Props) {
   const { slug } = await params;
+  const locale = await getLocale();
+  const c = t(locale);
   const artwork = await getArtworkBySlug(slug);
   if (!artwork) notFound();
-  const [settings, adjacent] = await Promise.all([getSiteSettings(), getAdjacentArtworks(artwork)]);
+  const [rawSettings, adjacent] = await Promise.all([getSiteSettings(), getAdjacentArtworks(artwork)]);
+  const settings = localizedSettings(rawSettings, locale);
   const primary = artwork.images.find((image) => image.is_primary) ?? artwork.images[0];
   const canPurchase = artwork.status === "available";
 
@@ -70,10 +74,10 @@ export default async function ArtworkPage({ params }: Props) {
                 alt={primary.alt_text}
                 width={primary.width ?? 1200}
                 height={primary.height ?? 1500}
-                className="w-full bg-[#e8e1d6] object-cover"
+                className="w-full bg-[#F26716]/20 object-cover"
               />
             ) : (
-              <div className="aspect-[4/5] bg-[#e8e1d6]" />
+              <div className="aspect-[4/5] bg-[#F26716]/20" />
             )}
             {artwork.images.length > 1 ? (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -87,40 +91,40 @@ export default async function ArtworkPage({ params }: Props) {
           </div>
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <div className="flex items-center gap-3">
-              <StatusBadge status={artwork.status} />
-              <span className="text-sm text-[#746f67]">One-of-one original unless otherwise noted</span>
+              <StatusBadge status={artwork.status} locale={locale} />
+              <span className="text-sm text-[#084A24]">{c.common.originalNotPrint}</span>
             </div>
             <h1 className="editorial-title mt-6 text-5xl">{artwork.title}</h1>
-            {artwork.subtitle ? <p className="mt-3 text-xl text-[#746f67]">{artwork.subtitle}</p> : null}
-            <dl className="mt-8 grid gap-4 border-y border-[#d7d0c5] py-6 text-sm">
-              <Detail label="Year" value={artwork.year?.toString() ?? "To be confirmed"} />
-              <Detail label="Medium" value={artwork.medium} />
-              <Detail label="Surface" value={artwork.surface ?? "To be confirmed"} />
-              <Detail label="Dimensions" value={formatDimensions(artwork.width_cm, artwork.height_cm)} />
-              <Detail label="Edition" value="One-of-one original" />
-              <Detail label="Price" value={formatMoney(artwork.price_cents, artwork.currency)} />
+            {artwork.subtitle ? <p className="mt-3 text-xl text-[#084A24]">{artwork.subtitle}</p> : null}
+            <dl className="mt-8 grid gap-4 border-y border-[#084A24]/25 py-6 text-sm">
+              <Detail label={c.artwork.year} value={artwork.year?.toString() ?? c.artwork.defaultSurface} />
+              <Detail label={c.artwork.medium} value={artwork.medium} />
+              <Detail label={c.artwork.surface} value={artwork.surface ?? c.artwork.defaultSurface} />
+              <Detail label={c.artwork.dimensions} value={artwork.width_cm && artwork.height_cm ? formatDimensions(artwork.width_cm, artwork.height_cm) : c.artwork.defaultDimensions} />
+              <Detail label={c.artwork.edition} value={c.artwork.oneOfOne} />
+              <Detail label={c.artwork.price} value={formatMoney(artwork.price_cents, artwork.currency)} />
             </dl>
-            {artwork.description ? <p className="mt-6 leading-8 text-[#4b4741]">{artwork.description}</p> : null}
-            <p className="mt-6 text-sm leading-6 text-[#746f67]">{settings.defaultShippingMessage}</p>
+            {artwork.description ? <p className="mt-6 leading-8 text-[#04261E]">{artwork.description}</p> : null}
+            <p className="mt-6 text-sm leading-6 text-[#084A24]">{settings.defaultShippingMessage}</p>
             {canPurchase ? (
               <Link href={`/checkout/${artwork.slug}`} className="button mt-8 w-full">
-                Purchase artwork
+                {c.artwork.purchase}
               </Link>
             ) : (
               <button className="button mt-8 w-full opacity-60" disabled>
-                Purchasing unavailable
+                {c.artwork.unavailable}
               </button>
             )}
             <div className="mt-8 flex justify-between gap-4 text-sm underline underline-offset-4">
-              {adjacent.previous ? <Link href={`/works/${adjacent.previous.slug}`}>Previous</Link> : <span />}
-              {adjacent.next ? <Link href={`/works/${adjacent.next.slug}`}>Next</Link> : <span />}
+              {adjacent.previous ? <Link href={`/works/${adjacent.previous.slug}`}>{c.artwork.previous}</Link> : <span />}
+              {adjacent.next ? <Link href={`/works/${adjacent.next.slug}`}>{c.artwork.next}</Link> : <span />}
             </div>
           </aside>
         </div>
         {adjacent.related.length ? (
           <section className="mt-20">
-            <h2 className="editorial-title mb-8 text-3xl">Related Works</h2>
-            <ArtworkGrid artworks={adjacent.related} />
+            <h2 className="editorial-title mb-8 text-3xl">{c.artwork.related}</h2>
+            <ArtworkGrid artworks={adjacent.related} locale={locale} />
           </section>
         ) : null}
       </main>
@@ -132,7 +136,7 @@ export default async function ArtworkPage({ params }: Props) {
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid grid-cols-[9rem_1fr] gap-4">
-      <dt className="uppercase tracking-[0.08em] text-[#746f67]">{label}</dt>
+      <dt className="uppercase tracking-[0.08em] text-[#084A24]">{label}</dt>
       <dd>{value}</dd>
     </div>
   );

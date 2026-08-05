@@ -26,9 +26,9 @@ export function ImageUploadForm({ artworkId }: { artworkId: string }) {
   }
 
   return (
-    <form ref={form} onSubmit={submit} className="grid gap-4 border border-[#d7d0c5] bg-[#f8f4ed] p-5">
+    <form ref={form} onSubmit={submit} className="grid gap-4 border border-[#084A24]/25 bg-[#F2EDD5] p-5">
       <h2 className="editorial-title text-2xl">Images</h2>
-      {message ? <p className="text-sm text-[#746f67]">{message}</p> : null}
+      {message ? <p className="text-sm text-[#084A24]">{message}</p> : null}
       <label className="label">
         Image files
         <input className="field" name="files" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple required />

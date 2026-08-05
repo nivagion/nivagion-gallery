@@ -88,11 +88,15 @@ export type ContactMessage = {
 
 export type SiteSettings = {
   siteDescription: string;
+  siteDescriptionHr: string;
   contactEmail: string;
   homepageIntroduction: string;
+  homepageIntroductionHr: string;
   artistBiography: string;
+  artistBiographyHr: string;
   studioLocationWording: string;
   defaultShippingMessage: string;
+  defaultShippingMessageHr: string;
   croatianShippingCents: number;
   internationalShippingMode: string;
   announcementText: string;
@@ -100,6 +104,7 @@ export type SiteSettings = {
   otherSocialUrl: string;
   returnConditions: string;
   commissionAvailability: string;
+  commissionAvailabilityHr: string;
   customDomainEmail: string;
   legalSellerInformation: string;
   croatianBusinessTaxInformation: string;

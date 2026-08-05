@@ -10,7 +10,7 @@ export interface PaymentProvider {
   createIntent(artwork: ArtworkWithImages): PaymentIntent;
 }
 
-export const revolutPlaceholderProvider: PaymentProvider = {
+export const revolutLinkProvider: PaymentProvider = {
   createIntent(artwork) {
     if (artwork.revolut_payment_url) {
       return {

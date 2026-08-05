@@ -13,7 +13,7 @@ export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
 
   return (
     <form action={action} className="grid gap-6">
-      {state?.message ? <p className="border border-[#d7d0c5] p-3 text-sm text-[#4b4741]">{state.message}</p> : null}
+      {state?.message ? <p className="border border-[#084A24]/25 p-3 text-sm text-[#04261E]">{state.message}</p> : null}
       {artwork ? <input type="hidden" name="id" value={artwork.id} /> : null}
       <div className="grid gap-4 md:grid-cols-2">
         <label className="label">
@@ -22,7 +22,7 @@ export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
         </label>
         <label className="label">
           Slug
-          <input className="field" name="slug" defaultValue={artwork?.slug ?? ""} placeholder={generatedSlug} />
+          <input className="field" name="slug" defaultValue={artwork?.slug ?? generatedSlug} />
         </label>
       </div>
       <label className="label">
@@ -67,7 +67,7 @@ export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
       </label>
       <label className="label">
         Revolut payment URL
-        <input className="field" name="revolut_payment_url" type="url" defaultValue={artwork?.revolut_payment_url ?? ""} placeholder="https://revolut.me/..." />
+        <input className="field" name="revolut_payment_url" type="url" defaultValue={artwork?.revolut_payment_url ?? ""} />
       </label>
       <div className="grid gap-4 md:grid-cols-3">
         <label className="label">
@@ -80,11 +80,11 @@ export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
             <option value="archived">Archived</option>
           </select>
         </label>
-        <label className="flex items-center gap-3 border border-[#d7d0c5] bg-[#f8f4ed] px-4 py-3">
+        <label className="flex items-center gap-3 border border-[#084A24]/25 bg-[#F2EDD5] px-4 py-3">
           <input type="checkbox" name="is_published" defaultChecked={artwork?.is_published ?? false} />
           Published
         </label>
-        <label className="flex items-center gap-3 border border-[#d7d0c5] bg-[#f8f4ed] px-4 py-3">
+        <label className="flex items-center gap-3 border border-[#084A24]/25 bg-[#F2EDD5] px-4 py-3">
           <input type="checkbox" name="is_featured" defaultChecked={artwork?.is_featured ?? false} />
           Featured
         </label>

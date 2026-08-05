@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalPage } from "../../components/public/LegalPage";
-import { getSiteSettings } from "../../lib/db/settings";
+import { getLocale, t } from "../../lib/i18n";
 import { canonical } from "../../lib/site";
 
 export const metadata: Metadata = {
-  title: "Shipping and Returns",
+  title: "Shipping",
   alternates: { canonical: canonical("/shipping-and-returns") },
 };
 
 export default async function ShippingPage() {
-  const settings = await getSiteSettings();
+  const c = t(await getLocale());
   return (
-    <LegalPage title="Shipping and Returns">
-      <p>{settings.defaultShippingMessage}</p>
-      <p>{settings.internationalShippingMode}</p>
-      <p>{settings.returnConditions}</p>
-      <p>LEGAL REVIEW REQUIRED: confirm shipping timelines, return rules, damaged-package process and any statutory obligations before launch.</p>
+    <LegalPage title={c.legal.shippingTitle}>
+      {c.legal.shipping.map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
+      <Link href="/contact" className="button button-secondary justify-self-start">
+        {c.common.writeMe}
+      </Link>
     </LegalPage>
   );
 }

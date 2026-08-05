@@ -31,11 +31,11 @@ export function ArtworkOrderList({ artworks }: { artworks: ArtworkWithImages[] }
             event.preventDefault();
             move(artwork.id);
           }}
-          className="flex items-center gap-3 border border-[#d7d0c5] bg-[#f8f4ed] p-3"
+          className="flex items-center gap-3 border border-[#084A24]/25 bg-[#F2EDD5] p-3"
         >
           <GripVertical size={18} aria-hidden />
           <span className="font-medium">{artwork.title}</span>
-          <span className="ml-auto text-sm text-[#746f67]">{artwork.status}</span>
+          <span className="ml-auto text-sm text-[#084A24]">{artwork.status}</span>
         </div>
       ))}
       <button className="button button-secondary justify-self-start">

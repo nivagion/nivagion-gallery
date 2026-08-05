@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
-  <title id="title">Demo marker study placeholder</title>
-  <desc id="desc">A neutral placeholder image for testing an artwork layout.</desc>
-  <rect width="1200" height="1500" fill="#e8e1d6"/>
-  <path d="M210 1180 C420 910 340 585 560 340 C720 160 950 255 925 510 C900 765 690 900 720 1185" fill="none" stroke="#191716" stroke-width="28" stroke-linecap="square"/>
-  <path d="M308 384 L895 1100" stroke="#5d605a" stroke-width="18" stroke-linecap="square"/>
-  <path d="M260 760 L850 620" stroke="#9b8f80" stroke-width="24" stroke-linecap="square"/>
-  <text x="90" y="1395" fill="#191716" font-family="Arial, sans-serif" font-size="40">DEMO PLACEHOLDER</text>
+  <title id="title">Demo marker study image</title>
+  <desc id="desc">A demo image for testing an artwork layout.</desc>
+  <rect width="1200" height="1500" fill="#F2EDD5"/>
+  <path d="M210 1180 C420 910 340 585 560 340 C720 160 950 255 925 510 C900 765 690 900 720 1185" fill="none" stroke="#04261E" stroke-width="28" stroke-linecap="square"/>
+  <path d="M308 384 L895 1100" stroke="#084A24" stroke-width="18" stroke-linecap="square"/>
+  <path d="M260 760 L850 620" stroke="#E7390D" stroke-width="24" stroke-linecap="square"/>
+  <text x="90" y="1395" fill="#04261E" font-family="Helvetica, Arial, sans-serif" font-size="40">DEMO ARTWORK</text>
 </svg>

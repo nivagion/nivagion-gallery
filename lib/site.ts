@@ -5,40 +5,39 @@ export const siteConfig = {
   shortName: "Nivagion",
   domain: "https://nivagion.com",
   artistLocation: "Croatia",
-  primaryMedia: "marker artwork, with occasional spray-paint work",
+  primaryMedia: "marker drawings and spray-paint",
   currentContactEmail: "admin@example.com",
   defaultCurrency: "EUR",
   defaultLocale: "en-HR",
-  description:
-    "Atelier Nivagion is an independent art practice based in Croatia, focused primarily on marker drawings and occasional spray-paint work.",
+  description: "I make various marker drawings and spray paintings.",
 };
 
 export const defaultSiteSettings: SiteSettings = {
   siteDescription: siteConfig.description,
+  siteDescriptionHr: "Izrađujem razne crteže markerima i spray-paint radove.",
   contactEmail: siteConfig.currentContactEmail,
-  homepageIntroduction:
-    "Original marker drawings and occasional spray-paint works, presented directly from the studio.",
-  artistBiography:
-    "Editable placeholder: add the artist biography here when ready. Do not publish unreviewed personal history.",
-  studioLocationWording:
-    "Editable placeholder: describe the studio location in Croatia when ready.",
+  homepageIntroduction: "Marker drawings and spray-paint. Originals only.",
+  homepageIntroductionHr: "Crteži markerima i spray-paint radovi. Samo originali.",
+  artistBiography: "I'm Leo. I draw for fun and sell the pieces I want to let go.",
+  artistBiographyHr:
+    "Ja sam Leo. Crtam iz gušta i prodajem radove koje želim pustiti dalje.",
+  studioLocationWording: "Croatia",
   defaultShippingMessage:
-    "Shipping costs and timing are confirmed before payment unless a listed payment link is available.",
+    "I plan to ship with Hrvatska Posta. Message me if you have questions.",
+  defaultShippingMessageHr:
+    "Za slanje planiram koristiti Hrvatsku Poštu. Pošalji mi poruku ako imaš pitanje.",
   croatianShippingCents: 0,
-  internationalShippingMode:
-    "Editable placeholder: add international shipping availability and pricing.",
+  internationalShippingMode: "",
   announcementText: "",
   instagramUrl: "",
   otherSocialUrl: "",
-  returnConditions:
-    "Editable legal placeholder: return conditions require review before launch.",
-  commissionAvailability:
-    "Editable placeholder: state whether commissions are currently available.",
-  customDomainEmail: "Editable placeholder: replace with hello@nivagion.com when configured.",
-  legalSellerInformation:
-    "LEGAL REVIEW REQUIRED: add seller identity and required business details before launch.",
+  returnConditions: "",
+  commissionAvailability: "For custom ideas, send me a message.",
+  commissionAvailabilityHr: "Za ideje po dogovoru, pošalji mi poruku.",
+  customDomainEmail: "hello@nivagion.com can be added later.",
+  legalSellerInformation: "Add seller details before launch.",
   croatianBusinessTaxInformation:
-    "LEGAL/TAX REVIEW REQUIRED: add Croatian business and tax information before launch.",
+    "Add Croatian business and tax information before launch.",
 };
 
 export function canonical(path = "/") {

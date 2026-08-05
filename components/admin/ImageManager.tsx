@@ -32,12 +32,12 @@ export function ImageManager({ artworkId, images }: { artworkId: string; images:
   }
 
   if (!items.length) {
-    return <p className="border border-[#d7d0c5] p-4 text-sm text-[#746f67]">No images uploaded yet.</p>;
+    return <p className="border border-[#084A24]/25 p-4 text-sm text-[#084A24]">No images uploaded yet.</p>;
   }
 
   return (
     <div className="grid gap-3">
-      {message ? <p className="text-sm text-[#746f67]">{message}</p> : null}
+      {message ? <p className="text-sm text-[#084A24]">{message}</p> : null}
       {items.map((image) => (
         <figure
           key={image.id}
@@ -47,15 +47,15 @@ export function ImageManager({ artworkId, images }: { artworkId: string; images:
             event.preventDefault();
             move(image.id);
           }}
-          className="border border-[#d7d0c5] bg-[#f8f4ed] p-3"
+          className="border border-[#084A24]/25 bg-[#F2EDD5] p-3"
         >
           <img src={imageUrl(image.object_key)} alt={image.alt_text} className="aspect-[4/5] w-full object-cover" />
-          <figcaption className="mt-3 grid gap-3 text-sm text-[#746f67]">
+          <figcaption className="mt-3 grid gap-3 text-sm text-[#084A24]">
             <span>{image.is_primary ? "Primary · " : ""}{image.alt_text}</span>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                className="border border-[#d7d0c5] p-2 hover:border-[#181614]"
+                className="border border-[#084A24]/25 p-2 hover:border-[#E7390D]"
                 title="Drag to reorder image"
                 onClick={() => request({ action: "reorder", ids: items.map((item) => item.id) })}
               >
@@ -63,7 +63,7 @@ export function ImageManager({ artworkId, images }: { artworkId: string; images:
               </button>
               <button
                 type="button"
-                className="border border-[#d7d0c5] p-2 hover:border-[#181614]"
+                className="border border-[#084A24]/25 p-2 hover:border-[#E7390D]"
                 title="Set primary image"
                 onClick={() => request({ action: "primary", imageId: image.id })}
               >
@@ -71,7 +71,7 @@ export function ImageManager({ artworkId, images }: { artworkId: string; images:
               </button>
               <button
                 type="button"
-                className="border border-[#d7d0c5] p-2 hover:border-[#181614]"
+                className="border border-[#084A24]/25 p-2 hover:border-[#E7390D]"
                 title="Delete image"
                 onClick={() => {
                   if (window.confirm("Delete this image?")) request({ imageId: image.id }, "DELETE");

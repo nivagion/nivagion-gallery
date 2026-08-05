@@ -17,7 +17,7 @@ export default async function EditArtworkPage({ params }: Props) {
     <div className="grid gap-8">
       <div>
         <h1 className="editorial-title text-4xl">Edit Artwork</h1>
-        <p className="mt-2 text-[#746f67]">Last updated {formatDateTime(artwork.updated_at)}</p>
+        <p className="mt-2 text-[#084A24]">Last updated {formatDateTime(artwork.updated_at)}</p>
       </div>
       <div className="grid gap-8 lg:grid-cols-[1fr_24rem]">
         <ArtworkForm artwork={artwork} />

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getArtworkBySlug } from "../../../lib/db/artworks";
 import { createOrder } from "../../../lib/db/orders";
 import { getSiteSettings } from "../../../lib/db/settings";
-import { revolutPlaceholderProvider } from "../../../lib/payments/provider";
+import { revolutLinkProvider } from "../../../lib/payments/provider";
 import { assertSameOrigin, checkBasicRateLimit, visitorKey } from "../../../lib/security";
 import { checkoutSchema } from "../../../lib/validation/forms";
 
@@ -36,7 +36,7 @@ export async function submitCheckout(slug: string, _: unknown, formData: FormDat
   }
 
   const settings = await getSiteSettings();
-  const providerIntent = revolutPlaceholderProvider.createIntent(artwork);
+  const providerIntent = revolutLinkProvider.createIntent(artwork);
   let reference: string;
   try {
     reference = await createOrder({
@@ -58,7 +58,7 @@ export async function submitCheckout(slug: string, _: unknown, formData: FormDat
   } catch {
     return {
       ok: false,
-      message: "Orders require the D1 database locally. Run through Wrangler after migrations, or contact the studio directly.",
+      message: "Orders require the D1 database locally. Run through Wrangler after migrations, or contact me directly.",
     };
   }
 

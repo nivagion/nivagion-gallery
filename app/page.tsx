@@ -2,72 +2,56 @@ import Link from "next/link";
 import { ArtworkGrid } from "../components/public/ArtworkGrid";
 import { SiteFooter } from "../components/public/SiteFooter";
 import { SiteHeader } from "../components/public/SiteHeader";
-import { listFeaturedArtworks, listPublicArtworks } from "../lib/db/artworks";
+import { listPublicArtworks } from "../lib/db/artworks";
 import { getSiteSettings } from "../lib/db/settings";
-import { imageUrl } from "../lib/images";
+import { getLocale, localizedSettings, t } from "../lib/i18n";
 import { siteConfig } from "../lib/site";
 
 export default async function HomePage() {
-  const [settings, featured, artworks] = await Promise.all([
+  const locale = await getLocale();
+  const c = t(locale);
+  const [rawSettings, artworks] = await Promise.all([
     getSiteSettings(),
-    listFeaturedArtworks(),
-    listPublicArtworks({ sort: "manual" }),
+    listPublicArtworks({ sort: "manual", availability: "available" }),
   ]);
-  const visible = featured.length ? featured : artworks.slice(0, 3);
+  const settings = localizedSettings(rawSettings, locale);
+  const visible = artworks.slice(0, 6);
 
   return (
     <>
       <SiteHeader />
       <main>
-        <section className="mx-auto grid min-h-[82vh] max-w-7xl content-between gap-12 px-4 py-16 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <section className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:px-8">
+          <div className="grid max-w-3xl content-start gap-6">
             <div>
-              <p className="mb-5 text-sm uppercase tracking-[0.16em] text-[#746f67]">Original art from Croatia</p>
-              <h1 className="editorial-title max-w-3xl text-5xl leading-tight sm:text-7xl">
+              <p className="mb-4 text-sm uppercase tracking-[0.16em] text-[#E7390D]">{c.home.eyebrow}</p>
+              <h1 className="editorial-title max-w-3xl text-5xl font-black leading-tight sm:text-7xl">
                 {siteConfig.name}
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-[#4b4741]">{settings.siteDescription}</p>
+              <p className="mt-5 max-w-xl text-xl leading-8 text-[#04261E]">{settings.siteDescription}</p>
             </div>
-            {visible[0]?.images[0] ? (
-              <Link href={`/works/${visible[0].slug}`} className="group block">
-                <img
-                  src={imageUrl(visible[0].images[0].object_key)}
-                  alt={visible[0].images[0].alt_text}
-                  className="max-h-[68vh] w-full object-cover transition duration-300 group-hover:scale-[1.01]"
-                  width={visible[0].images[0].width ?? 1200}
-                  height={visible[0].images[0].height ?? 1500}
-                />
-              </Link>
-            ) : null}
-          </div>
-          <div className="grid gap-3 border-t border-[#d7d0c5] pt-6 sm:grid-cols-[1fr_auto] sm:items-center">
-            <p className="max-w-2xl text-[#746f67]">{settings.homepageIntroduction}</p>
             <Link href="/works" className="button button-secondary">
-              View all work
+              {c.common.viewAll}
             </Link>
           </div>
-        </section>
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="mb-8 flex items-end justify-between gap-6">
-            <h2 className="editorial-title text-3xl">Featured Works</h2>
-            <Link href="/works" className="text-sm underline underline-offset-4">
-              All works
-            </Link>
+          <div className="pt-2">
+            <div className="mb-5 flex items-end justify-between gap-6">
+              <h2 className="editorial-title text-3xl font-black">{c.home.featured}</h2>
+              <Link href="/works" className="text-sm font-bold uppercase tracking-[0.08em] text-[#E7390D]">
+                {c.common.viewAll}
+              </Link>
+            </div>
+            <ArtworkGrid artworks={visible} locale={locale} />
           </div>
-          <ArtworkGrid artworks={visible} />
         </section>
-        <section className="mx-auto grid max-w-7xl gap-6 px-4 py-16 sm:px-6 md:grid-cols-2 lg:px-8">
-          <h2 className="editorial-title text-3xl">Artist Introduction</h2>
-          <p className="leading-8 text-[#4b4741]">{settings.artistBiography}</p>
-        </section>
-        <section className="border-y border-[#d7d0c5] px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-[1fr_auto] md:items-center">
+        <section className="border-y border-[#084A24]/25 bg-[#F2EDD5] px-4 py-12 text-[#04261E] sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-[1fr_auto] md:items-center">
             <div>
-              <h2 className="editorial-title text-3xl">Contact</h2>
-              <p className="mt-3 text-[#746f67]">For availability, commissions, shipping, or studio enquiries.</p>
+              <h2 className="editorial-title text-3xl font-black">{c.nav.contact}</h2>
+              <p className="mt-3 max-w-xl">{c.home.contactText}</p>
             </div>
             <Link href="/contact" className="button">
-              Write to the studio
+              {c.common.writeMe}
             </Link>
           </div>
         </section>

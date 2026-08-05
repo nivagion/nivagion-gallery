@@ -171,6 +171,6 @@ npx wrangler r2 object get nivagion-artwork-images/path/to/object --file=local-c
 
 For full-bucket backup, use Cloudflare R2 S3-compatible tooling such as `rclone` or `aws s3 sync` with scoped R2 credentials. Do not commit exported data or credentials.
 
-## Legal Placeholders
+## Legal Notes
 
 Privacy, terms, shipping, seller identity and Croatian tax/business information are intentionally labelled in source and admin settings as requiring review. Do not publish those sections as final legal advice without review.
