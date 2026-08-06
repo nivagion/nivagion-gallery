@@ -28,18 +28,11 @@ export default async function HomePage() {
               <h1 className="editorial-title max-w-3xl text-5xl font-black leading-tight sm:text-7xl">
                 {siteConfig.name}
               </h1>
-              <p className="mt-5 max-w-xl text-xl leading-8 text-[#04261E]">{settings.siteDescription}</p>
             </div>
-            <Link href="/works" className="button button-secondary">
-              {c.common.viewAll}
-            </Link>
           </div>
-          <div className="pt-2">
-            <div className="mb-5 flex items-end justify-between gap-6">
+          <div>
+            <div className="mb-5">
               <h2 className="editorial-title text-3xl font-black">{c.home.featured}</h2>
-              <Link href="/works" className="text-sm font-bold uppercase tracking-[0.08em] text-[#E7390D]">
-                {c.common.viewAll}
-              </Link>
             </div>
             <ArtworkGrid artworks={visible} locale={locale} />
           </div>

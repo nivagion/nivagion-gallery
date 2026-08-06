@@ -21,12 +21,17 @@ import type { SiteSettings } from "../../lib/types";
 export async function saveArtwork(_: unknown, formData: FormData) {
   await requireAdmin();
   await assertSameOrigin();
-  const title = String(formData.get("title") ?? "");
+  const formId = formData.get("id") ? String(formData.get("id")) : undefined;
+  const artworkId = formId ?? id("art");
+  const existingArtwork = formId ? await getArtworkById(formId) : null;
+  const title = String(formData.get("title") ?? "").trim() || existingArtwork?.title || "Untitled";
+  const slugBase = slugify(title) || "work";
+  const slug = existingArtwork?.slug ?? `${slugBase}-${slugify(artworkId).slice(-8)}`;
   const parsed = artworkFormSchema.safeParse({
-    id: formData.get("id") || undefined,
+    id: formId,
     title,
-    slug: formData.get("slug") || slugify(title),
-    subtitle: formData.get("subtitle"),
+    slug,
+    subtitle: null,
     year: formData.get("year"),
     medium: formData.get("medium"),
     surface: formData.get("surface"),
@@ -43,7 +48,6 @@ export async function saveArtwork(_: unknown, formData: FormData) {
   if (!parsed.success) {
     return { ok: false, message: parsed.error.issues[0]?.message ?? "Check artwork fields." };
   }
-  const artworkId = parsed.data.id ?? id("art");
   try {
     await upsertArtwork({
       id: artworkId,
@@ -72,13 +76,6 @@ export async function saveArtwork(_: unknown, formData: FormData) {
   revalidatePath("/works");
   revalidatePath("/archive");
   redirect(`/admin/artworks/${artworkId}`);
-}
-
-export async function archiveArtwork(formData: FormData) {
-  await requireAdmin();
-  await assertSameOrigin();
-  await updateArtworkStatus(String(formData.get("id")), "archived");
-  revalidatePath("/admin/artworks");
 }
 
 export async function duplicateArtworkAction(formData: FormData) {

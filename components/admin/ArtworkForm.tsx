@@ -1,15 +1,14 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useState } from "react";
 import { Save } from "lucide-react";
 import { saveArtwork } from "../../app/admin/actions";
-import { slugify } from "../../lib/slug";
 import type { ArtworkWithImages } from "../../lib/types";
 
 export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
   const [state, action, pending] = useActionState(saveArtwork, null);
   const [title, setTitle] = useState(artwork?.title ?? "");
-  const generatedSlug = useMemo(() => slugify(title), [title]);
+  const status = artwork?.status === "archived" ? "draft" : artwork?.status ?? "draft";
 
   return (
     <form action={action} className="grid gap-6">
@@ -18,17 +17,9 @@ export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
       <div className="grid gap-4 md:grid-cols-2">
         <label className="label">
           Title
-          <input className="field" name="title" value={title} onChange={(event) => setTitle(event.target.value)} required />
-        </label>
-        <label className="label">
-          Slug
-          <input className="field" name="slug" defaultValue={artwork?.slug ?? generatedSlug} />
+          <input className="field" name="title" value={title} onChange={(event) => setTitle(event.target.value)} />
         </label>
       </div>
-      <label className="label">
-        Subtitle
-        <input className="field" name="subtitle" defaultValue={artwork?.subtitle ?? ""} />
-      </label>
       <div className="grid gap-4 md:grid-cols-4">
         <label className="label">
           Year
@@ -47,7 +38,7 @@ export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
           <input className="field" name="price_eur" inputMode="decimal" defaultValue={artwork?.price_cents ? artwork.price_cents / 100 : ""} />
         </label>
       </div>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <label className="label">
           Width cm
           <input className="field" name="width_cm" inputMode="decimal" defaultValue={artwork?.width_cm ?? ""} />
@@ -72,21 +63,16 @@ export function ArtworkForm({ artwork }: { artwork?: ArtworkWithImages }) {
       <div className="grid gap-4 md:grid-cols-3">
         <label className="label">
           Status
-          <select className="field" name="status" defaultValue={artwork?.status ?? "draft"}>
+          <select className="field" name="status" defaultValue={status}>
             <option value="draft">Draft</option>
             <option value="available">Available</option>
             <option value="reserved">Reserved</option>
             <option value="sold">Sold</option>
-            <option value="archived">Archived</option>
           </select>
         </label>
         <label className="flex items-center gap-3 border border-[#084A24]/25 bg-[#F2EDD5] px-4 py-3">
           <input type="checkbox" name="is_published" defaultChecked={artwork?.is_published ?? false} />
           Published
-        </label>
-        <label className="flex items-center gap-3 border border-[#084A24]/25 bg-[#F2EDD5] px-4 py-3">
-          <input type="checkbox" name="is_featured" defaultChecked={artwork?.is_featured ?? false} />
-          Featured
         </label>
       </div>
       <button className="button justify-self-start" disabled={pending}>

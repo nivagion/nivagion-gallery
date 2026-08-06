@@ -6,11 +6,18 @@ import { getLocale, t } from "../../lib/i18n";
 export async function SiteFooter({ settings }: { settings: SiteSettings }) {
   const locale = await getLocale();
   const c = t(locale);
+  const tagline =
+    locale === "hr"
+      ? "crteži markerom i spray-painting"
+      : "marker drawings and spray paintings";
   return (
     <footer className="border-t border-[#084A24]/25 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_auto]">
         <div>
-          <p className="editorial-title text-2xl">{siteConfig.name}</p>
+          <p className="editorial-title text-2xl">
+            {siteConfig.name}
+            <span className="font-sans text-sm font-normal text-[#084A24]"> · {tagline}</span>
+          </p>
           <a className="mt-4 inline-block text-sm underline underline-offset-4" href={`mailto:${settings.contactEmail}`}>
             {settings.contactEmail}
           </a>

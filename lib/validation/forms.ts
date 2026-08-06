@@ -6,7 +6,6 @@ export const artworkStatuses: ArtworkStatus[] = [
   "available",
   "reserved",
   "sold",
-  "archived",
 ];
 
 export const paymentStatuses: PaymentStatus[] = [
@@ -46,7 +45,7 @@ const centsFromEuro = z
 
 export const artworkFormSchema = z.object({
   id: z.string().optional(),
-  title: z.string().trim().min(1, "Title is required.").max(160),
+  title: z.string().trim().min(1).max(160),
   slug: z.string().trim().min(1).max(120).regex(/^[a-z0-9-]+$/, "Use lowercase letters, numbers and hyphens."),
   subtitle: optionalText,
   year: z
@@ -69,7 +68,7 @@ export const artworkFormSchema = z.object({
   description: optionalText,
   price_cents: centsFromEuro,
   currency: z.string().trim().default("EUR"),
-  status: z.enum(["draft", "available", "reserved", "sold", "archived"]),
+  status: z.enum(["draft", "available", "reserved", "sold"]),
   is_featured: z.coerce.boolean().default(false),
   is_published: z.coerce.boolean().default(false),
   revolut_payment_url: z

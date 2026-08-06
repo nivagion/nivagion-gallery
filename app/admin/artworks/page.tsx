@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Archive, Copy, Pencil, Plus } from "lucide-react";
+import { Copy, Pencil, Plus } from "lucide-react";
 import { ArtworkOrderList } from "../../../components/admin/ArtworkOrderList";
-import { archiveArtwork, duplicateArtworkAction } from "../actions";
+import { duplicateArtworkAction } from "../actions";
 import { listAdminArtworks } from "../../../lib/db/artworks";
 import { formatMoney } from "../../../lib/format";
 import { imageUrl } from "../../../lib/images";
@@ -44,7 +44,7 @@ export default async function AdminArtworksPage() {
                           <Link href={`/admin/artworks/${artwork.id}`} className="font-semibold underline-offset-4 hover:underline">
                             {artwork.title}
                           </Link>
-                          <p className="text-[#084A24]">{artwork.slug}</p>
+                          <p className="text-[#084A24]">{artwork.medium}</p>
                         </div>
                       </div>
                     </td>
@@ -60,12 +60,6 @@ export default async function AdminArtworksPage() {
                           <input type="hidden" name="id" value={artwork.id} />
                           <button className="border border-[#084A24]/25 p-2 hover:border-[#E7390D]" title="Duplicate artwork">
                             <Copy size={16} aria-hidden />
-                          </button>
-                        </form>
-                        <form action={archiveArtwork}>
-                          <input type="hidden" name="id" value={artwork.id} />
-                          <button className="border border-[#084A24]/25 p-2 hover:border-[#E7390D]" title="Archive artwork">
-                            <Archive size={16} aria-hidden />
                           </button>
                         </form>
                       </div>

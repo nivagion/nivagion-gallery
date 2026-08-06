@@ -95,13 +95,10 @@ export default async function ArtworkPage({ params }: Props) {
               <span className="text-sm text-[#084A24]">{c.common.originalNotPrint}</span>
             </div>
             <h1 className="editorial-title mt-6 text-5xl">{artwork.title}</h1>
-            {artwork.subtitle ? <p className="mt-3 text-xl text-[#084A24]">{artwork.subtitle}</p> : null}
             <dl className="mt-8 grid gap-4 border-y border-[#084A24]/25 py-6 text-sm">
-              <Detail label={c.artwork.year} value={artwork.year?.toString() ?? c.artwork.defaultSurface} />
               <Detail label={c.artwork.medium} value={artwork.medium} />
               <Detail label={c.artwork.surface} value={artwork.surface ?? c.artwork.defaultSurface} />
               <Detail label={c.artwork.dimensions} value={artwork.width_cm && artwork.height_cm ? formatDimensions(artwork.width_cm, artwork.height_cm) : c.artwork.defaultDimensions} />
-              <Detail label={c.artwork.edition} value={c.artwork.oneOfOne} />
               <Detail label={c.artwork.price} value={formatMoney(artwork.price_cents, artwork.currency)} />
             </dl>
             {artwork.description ? <p className="mt-6 leading-8 text-[#04261E]">{artwork.description}</p> : null}
