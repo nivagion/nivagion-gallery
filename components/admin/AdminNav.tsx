@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Image, Inbox, LayoutDashboard, Settings, ShoppingBag } from "lucide-react";
+import { Image, Inbox, LayoutDashboard, ListOrdered, Settings, ShoppingBag } from "lucide-react";
 import { siteConfig } from "../../lib/site";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/artworks", label: "Artworks", icon: Image },
+  { href: "/admin/artworks/order", label: "Order", icon: ListOrdered },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/messages", label: "Messages", icon: Inbox },
   { href: "/admin/settings", label: "Settings", icon: Settings },

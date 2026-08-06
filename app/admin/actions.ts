@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
+  deleteArtworkById,
   duplicateArtwork,
   getArtworkById,
   updateArtworkOrder,
@@ -13,6 +14,7 @@ import { updateOrderStatus } from "../../lib/db/orders";
 import { updateSiteSettings } from "../../lib/db/settings";
 import { defaultSiteSettings } from "../../lib/site";
 import { id } from "../../lib/db/client";
+import { deleteArtworkObject } from "../../lib/images";
 import { assertSameOrigin, requireAdmin } from "../../lib/security";
 import { slugify } from "../../lib/slug";
 import { artworkFormSchema, orderUpdateSchema } from "../../lib/validation/forms";
@@ -86,6 +88,19 @@ export async function duplicateArtworkAction(formData: FormData) {
   redirect(`/admin/artworks/${copyId}`);
 }
 
+export async function deleteArtworkAction(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const artworkId = String(formData.get("id") ?? "");
+  const images = await deleteArtworkById(artworkId);
+  await Promise.all(images.map((image) => deleteArtworkObject(image.object_key)));
+  revalidatePath("/");
+  revalidatePath("/works");
+  revalidatePath("/admin/artworks");
+  revalidatePath("/admin/artworks/order");
+  redirect("/admin/artworks");
+}
+
 export async function reorderArtworks(formData: FormData) {
   await requireAdmin();
   await assertSameOrigin();
@@ -94,6 +109,7 @@ export async function reorderArtworks(formData: FormData) {
     .filter(Boolean);
   await updateArtworkOrder(ids);
   revalidatePath("/admin/artworks");
+  revalidatePath("/admin/artworks/order");
   revalidatePath("/works");
 }
 

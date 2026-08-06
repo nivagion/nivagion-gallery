@@ -3,6 +3,7 @@
 import { GripVertical, Save } from "lucide-react";
 import { useState } from "react";
 import { reorderArtworks } from "../../app/admin/actions";
+import { imageUrl } from "../../lib/images";
 import type { ArtworkWithImages } from "../../lib/types";
 
 export function ArtworkOrderList({ artworks }: { artworks: ArtworkWithImages[] }) {
@@ -22,22 +23,30 @@ export function ArtworkOrderList({ artworks }: { artworks: ArtworkWithImages[] }
   return (
     <form action={reorderArtworks} className="grid gap-3">
       <input type="hidden" name="ids" value={items.map((item) => item.id).join(",")} />
-      {items.map((artwork) => (
-        <div
-          key={artwork.id}
-          draggable
-          onDragStart={() => setDragged(artwork.id)}
-          onDragOver={(event) => {
-            event.preventDefault();
-            move(artwork.id);
-          }}
-          className="flex items-center gap-3 border border-[#084A24]/25 bg-[#F2EDD5] p-3"
-        >
-          <GripVertical size={18} aria-hidden />
-          <span className="font-medium">{artwork.title}</span>
-          <span className="ml-auto text-sm text-[#084A24]">{artwork.status}</span>
-        </div>
-      ))}
+      {items.map((artwork) => {
+        const primary = artwork.images.find((image) => image.is_primary) ?? artwork.images[0];
+        return (
+          <div
+            key={artwork.id}
+            draggable
+            onDragStart={() => setDragged(artwork.id)}
+            onDragOver={(event) => {
+              event.preventDefault();
+              move(artwork.id);
+            }}
+            className="flex items-center gap-3 border border-[#084A24]/25 bg-[#F2EDD5] p-3"
+          >
+            <GripVertical size={18} aria-hidden />
+            {primary ? (
+              <img src={imageUrl(primary.object_key)} alt="" className="h-14 w-11 bg-[#F26716]/20 object-cover" />
+            ) : (
+              <div className="h-14 w-11 bg-[#F26716]/20" aria-hidden />
+            )}
+            <span className="font-medium">{artwork.title}</span>
+            <span className="ml-auto text-sm text-[#084A24]">{artwork.status}</span>
+          </div>
+        );
+      })}
       <button className="button button-secondary justify-self-start">
         <Save size={18} aria-hidden />
         Save order

@@ -259,6 +259,16 @@ export async function updateArtworkStatus(artworkId: string, status: ArtworkStat
     .run();
 }
 
+export async function deleteArtworkById(artworkId: string) {
+  const db = getDb();
+  if (!db) throw new Error("D1 database binding is required.");
+  const images = await all<ArtworkImage>(
+    db.prepare("SELECT * FROM artwork_images WHERE artwork_id = ?").bind(artworkId)
+  );
+  await db.prepare("DELETE FROM artworks WHERE id = ?").bind(artworkId).run();
+  return images.map(normalizeImage);
+}
+
 export async function updateArtworkOrder(ids: string[]) {
   const db = getDb();
   if (!db) throw new Error("D1 database binding is required.");
