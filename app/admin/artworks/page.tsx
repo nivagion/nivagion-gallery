@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Copy, ListOrdered, Pencil, Plus } from "lucide-react";
 import { DeleteArtworkButton } from "../../../components/admin/DeleteArtworkButton";
+import { ArtworkImageFrame, artworkOrientation } from "../../../components/public/ArtworkImageFrame";
 import { duplicateArtworkAction } from "../actions";
 import { listAdminArtworks } from "../../../lib/db/artworks";
+import { formatArtworkStatus } from "../../../lib/artwork-status";
 import { formatMoney } from "../../../lib/format";
-import { imageUrl } from "../../../lib/images";
 
 export default async function AdminArtworksPage() {
   const artworks = await listAdminArtworks();
@@ -44,7 +45,11 @@ export default async function AdminArtworksPage() {
                 <tr key={artwork.id} className="border-b border-[#084A24]/25 align-top">
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-3">
-                      {primary ? <img src={imageUrl(primary.object_key)} alt="" className="h-16 w-12 object-cover" /> : <div className="h-16 w-12 bg-[#F26716]/20" />}
+                      {primary ? (
+                        <ArtworkImageFrame image={primary} className="h-16 w-14" foregroundClassName="!p-1" />
+                      ) : (
+                        <div className="h-16 w-14 bg-[#F26716]/20" />
+                      )}
                       <div>
                         <Link href={`/admin/artworks/${artwork.id}`} className="font-semibold underline-offset-4 hover:underline">
                           {artwork.title}
@@ -53,7 +58,7 @@ export default async function AdminArtworksPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="py-4 pr-4">{artwork.status}</td>
+                  <td className="py-4 pr-4">{formatArtworkStatus(artwork.status)}</td>
                   <td className="py-4 pr-4">{formatMoney(artwork.price_cents, artwork.currency)}</td>
                   <td className="py-4 pr-4">{artwork.is_published ? "Yes" : "No"}</td>
                   <td className="py-4 pr-4">
@@ -79,13 +84,26 @@ export default async function AdminArtworksPage() {
       </section>
       <section>
         <h2 className="editorial-title mb-4 text-2xl">Visual Grid</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-wrap justify-center gap-6">
           {artworks.map((artwork) => {
             const primary = artwork.images.find((image) => image.is_primary) ?? artwork.images[0];
+            const orientation = artworkOrientation(primary);
+            const cardClass =
+              orientation === "landscape"
+                ? "w-full sm:w-[calc(50%-0.75rem)] xl:w-[calc(33.333%-1rem)]"
+                : "w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] xl:w-[calc(25%-1.125rem)]";
+
             return (
-              <Link key={artwork.id} href={`/admin/artworks/${artwork.id}`} className="border border-[#084A24]/25 bg-[#F2EDD5] p-3">
-                {primary ? <img src={imageUrl(primary.object_key)} alt="" className="aspect-[4/5] w-full object-cover" /> : <div className="aspect-[4/5] bg-[#F26716]/20" />}
-                <p className="mt-3 font-medium">{artwork.title}</p>
+              <Link
+                key={artwork.id}
+                href={`/admin/artworks/${artwork.id}`}
+                className={`border border-[#084A24]/25 bg-[#F2EDD5] p-3 ${cardClass}`}
+              >
+                {primary ? <ArtworkImageFrame image={primary} /> : <div className="aspect-[4/5] bg-[#F26716]/20" />}
+                <div className="mt-4 flex items-start justify-between gap-3">
+                  <p className="font-medium">{artwork.title}</p>
+                  <p className="text-sm text-[#084A24]">{formatArtworkStatus(artwork.status)}</p>
+                </div>
               </Link>
             );
           })}

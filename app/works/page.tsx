@@ -33,7 +33,7 @@ export default async function WorksPage({ searchParams }: Props) {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-[96rem] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
           <div>
             <h1 className="editorial-title text-5xl">{c.works.title}</h1>

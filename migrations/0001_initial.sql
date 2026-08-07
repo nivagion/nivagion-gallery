@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS artworks (
   description TEXT,
   price_cents INTEGER CHECK (price_cents IS NULL OR price_cents >= 0),
   currency TEXT NOT NULL DEFAULT 'EUR',
-  status TEXT NOT NULL CHECK (status IN ('draft', 'available', 'reserved', 'sold', 'archived')),
+  status TEXT NOT NULL CHECK (status IN ('draft', 'available', 'reserved', 'sold', 'not_available', 'archived')),
   is_featured INTEGER NOT NULL DEFAULT 0 CHECK (is_featured IN (0, 1)),
   is_published INTEGER NOT NULL DEFAULT 0 CHECK (is_published IN (0, 1)),
   manual_sort_order INTEGER NOT NULL DEFAULT 0,

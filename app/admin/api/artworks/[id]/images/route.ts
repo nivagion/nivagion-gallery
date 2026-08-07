@@ -37,27 +37,31 @@ export async function POST(request: Request, { params }: Params) {
   const files = formData.getAll("files").filter((value): value is File => value instanceof File && value.size > 0);
   if (!files.length) return NextResponse.json({ message: "Choose at least one image." }, { status: 400 });
 
+  const uploadedObjectKeys: string[] = [];
   try {
     for (const [index, file] of files.entries()) {
       const imageId = id("img");
       const baseKey = `artworks/${artworkId}/${imageId}`;
-      const kind = await putArtworkImage(baseKey, file);
+      const image = await putArtworkImage(baseKey, file);
+      uploadedObjectKeys.push(baseKey);
       await insertArtworkImage({
         id: imageId,
         artwork_id: artworkId,
         object_key: baseKey,
         alt_text: parsed.data.altText,
         caption: parsed.data.caption,
-        width: null,
-        height: null,
-        file_type: kind.mime,
+        width: image.width,
+        height: image.height,
+        file_type: image.mime,
         file_size: file.size,
         display_order: artwork.images.length + index,
         is_primary: parsed.data.isPrimary && index === 0,
         created_at: new Date().toISOString(),
       });
+      uploadedObjectKeys.splice(uploadedObjectKeys.indexOf(baseKey), 1);
     }
   } catch (error) {
+    await Promise.all(uploadedObjectKeys.map((objectKey) => deleteArtworkObject(objectKey)));
     return NextResponse.json({ message: error instanceof Error ? error.message : "Upload failed." }, { status: 400 });
   }
 

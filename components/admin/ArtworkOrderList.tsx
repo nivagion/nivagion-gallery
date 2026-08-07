@@ -3,7 +3,8 @@
 import { GripVertical, Save } from "lucide-react";
 import { useState } from "react";
 import { reorderArtworks } from "../../app/admin/actions";
-import { imageUrl } from "../../lib/images";
+import { ArtworkImageFrame } from "../public/ArtworkImageFrame";
+import { formatArtworkStatus } from "../../lib/artwork-status";
 import type { ArtworkWithImages } from "../../lib/types";
 
 export function ArtworkOrderList({ artworks }: { artworks: ArtworkWithImages[] }) {
@@ -38,12 +39,12 @@ export function ArtworkOrderList({ artworks }: { artworks: ArtworkWithImages[] }
           >
             <GripVertical size={18} aria-hidden />
             {primary ? (
-              <img src={imageUrl(primary.object_key)} alt="" className="h-14 w-11 bg-[#F26716]/20 object-cover" />
+              <ArtworkImageFrame image={primary} className="h-14 w-14" foregroundClassName="!p-1" />
             ) : (
-              <div className="h-14 w-11 bg-[#F26716]/20" aria-hidden />
+              <div className="h-14 w-14 bg-[#F26716]/20" aria-hidden />
             )}
             <span className="font-medium">{artwork.title}</span>
-            <span className="ml-auto text-sm text-[#084A24]">{artwork.status}</span>
+            <span className="ml-auto text-sm text-[#084A24]">{formatArtworkStatus(artwork.status)}</span>
           </div>
         );
       })}

@@ -1,12 +1,8 @@
 import { z } from "zod";
+import { selectableArtworkStatuses } from "../artwork-status";
 import type { ArtworkStatus, FulfilmentStatus, PaymentStatus } from "../types";
 
-export const artworkStatuses: ArtworkStatus[] = [
-  "draft",
-  "available",
-  "reserved",
-  "sold",
-];
+export const artworkStatuses: ArtworkStatus[] = selectableArtworkStatuses;
 
 export const paymentStatuses: PaymentStatus[] = [
   "request",
@@ -68,7 +64,7 @@ export const artworkFormSchema = z.object({
   description: optionalText,
   price_cents: centsFromEuro,
   currency: z.string().trim().default("EUR"),
-  status: z.enum(["draft", "available", "reserved", "sold"]),
+  status: z.enum(["draft", "available", "reserved", "sold", "not_available"]),
   is_featured: z.coerce.boolean().default(false),
   is_published: z.coerce.boolean().default(false),
   revolut_payment_url: z

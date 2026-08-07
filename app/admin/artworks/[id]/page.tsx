@@ -19,11 +19,15 @@ export default async function EditArtworkPage({ params }: Props) {
         <h1 className="editorial-title text-4xl">Edit Artwork</h1>
         <p className="mt-2 text-[#084A24]">Last updated {formatDateTime(artwork.updated_at)}</p>
       </div>
-      <div className="grid gap-8 lg:grid-cols-[1fr_24rem]">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_30rem]">
         <ArtworkForm artwork={artwork} />
         <div className="grid content-start gap-6">
           <ImageUploadForm artworkId={artwork.id} />
-          <ImageManager artworkId={artwork.id} images={artwork.images} />
+          <ImageManager
+            key={artwork.images.map((image) => `${image.id}:${image.display_order}:${image.is_primary}`).join("|")}
+            artworkId={artwork.id}
+            images={artwork.images}
+          />
         </div>
       </div>
     </div>

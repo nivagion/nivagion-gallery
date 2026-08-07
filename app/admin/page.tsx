@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { getDashboardStats } from "../../lib/db/dashboard";
 import { listAdminArtworks } from "../../lib/db/artworks";
+import { formatArtworkStatus } from "../../lib/artwork-status";
 import { listMessages } from "../../lib/db/messages";
 import { formatDateTime } from "../../lib/format";
 
@@ -12,6 +13,7 @@ export default async function AdminDashboardPage() {
     ["Available works", stats.available],
     ["Reserved works", stats.reserved],
     ["Sold works", stats.sold],
+    ["Not available", stats.notAvailable],
     ["Draft works", stats.draft],
     ["Pending requests", stats.pendingRequests],
     ["Paid awaiting shipment", stats.paidAwaitingShipment],
@@ -48,7 +50,7 @@ export default async function AdminDashboardPage() {
             <Link key={artwork.id} href={`/admin/artworks/${artwork.id}`} className="flex items-center justify-between border border-[#084A24]/25 bg-[#F2EDD5] p-4 hover:border-[#E7390D]">
               <span>
                 <span className="font-semibold">{artwork.title}</span>
-                <span className="ml-3 text-sm text-[#084A24]">{artwork.status}</span>
+                <span className="ml-3 text-sm text-[#084A24]">{formatArtworkStatus(artwork.status)}</span>
               </span>
               <span className="inline-flex items-center gap-2 text-sm">
                 <Pencil size={16} aria-hidden />

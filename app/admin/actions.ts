@@ -27,6 +27,7 @@ export async function saveArtwork(_: unknown, formData: FormData) {
   const artworkId = formId ?? id("art");
   const existingArtwork = formId ? await getArtworkById(formId) : null;
   const title = String(formData.get("title") ?? "").trim() || existingArtwork?.title || "Untitled";
+  const status = String(formData.get("status") ?? "draft");
   const slugBase = slugify(title) || "work";
   const slug = existingArtwork?.slug ?? `${slugBase}-${slugify(artworkId).slice(-8)}`;
   const parsed = artworkFormSchema.safeParse({
@@ -42,9 +43,9 @@ export async function saveArtwork(_: unknown, formData: FormData) {
     description: formData.get("description"),
     price_cents: formData.get("price_eur") ?? "",
     currency: formData.get("currency") || "EUR",
-    status: formData.get("status"),
+    status,
     is_featured: formData.has("is_featured"),
-    is_published: formData.has("is_published"),
+    is_published: status !== "draft",
     revolut_payment_url: formData.get("revolut_payment_url"),
   });
   if (!parsed.success) {

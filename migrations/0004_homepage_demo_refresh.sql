@@ -17,7 +17,7 @@ INSERT OR IGNORE INTO artworks (
 ('demo-orange-signal', 'demo-orange-signal', 'DEMO: Orange Signal', NULL, 2025, 'Marker drawings and spray-paint', 'Board', 42, 59, 'Demo artwork entry for testing the gallery. Replace before launch.', 24000, 'EUR', 'available', 0, 1, 60, '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', NULL, NULL),
 ('demo-small-mark', 'demo-small-mark', 'DEMO: Small Mark', NULL, 2025, 'Marker', 'Paper', 18, 24, 'Demo artwork entry for testing the gallery. Replace before launch.', 9000, 'EUR', 'available', 0, 1, 70, '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', NULL, NULL),
 ('demo-sold-line', 'demo-sold-line', 'DEMO: Sold Line', NULL, 2024, 'Marker', 'Paper', 21, 30, 'Demo sold artwork entry for testing the gallery.', 11000, 'EUR', 'sold', 0, 1, 80, '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', NULL, NULL),
-('demo-sold-spray', 'demo-sold-spray', 'DEMO: Sold Spray', NULL, 2024, 'Marker drawings and spray-paint', 'Board', 50, 70, 'Demo sold artwork entry for testing the gallery.', 27000, 'EUR', 'sold', 0, 1, 90, '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', NULL, NULL);
+('demo-sold-spray', 'demo-sold-spray', 'DEMO: Sold Spray', NULL, 2024, 'Marker drawings and spray-paint', 'Board', 50, 70, 'Demo sold artwork entry for testing the gallery.', 27000, 'EUR', 'not_available', 0, 1, 90, '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', '2026-08-05T00:00:00.000Z', NULL, NULL);
 
 INSERT OR IGNORE INTO artwork_images (
   id, artwork_id, object_key, alt_text, caption, width, height, file_type, file_size,

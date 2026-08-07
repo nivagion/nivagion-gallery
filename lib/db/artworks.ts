@@ -39,50 +39,50 @@ function applyReservationExpiry(artwork: Artwork): Artwork {
   return artwork;
 }
 
-function filterDemo(sort: Sort, availability: Availability, includeDrafts = false) {
+function filterDemo(sort: Sort, availability: Availability, includeDrafts = false, limit?: number) {
   const filtered = demoArtworks
     .map((artwork) => ({ ...artwork, status: applyReservationExpiry(artwork).status }))
     .filter((artwork) => includeDrafts || (artwork.is_published && artwork.status !== "draft"))
     .filter((artwork) => {
       if (availability === "available") return artwork.status === "available";
-      if (availability === "sold") return artwork.status === "sold";
+      if (availability === "sold") return artwork.status === "sold" || artwork.status === "not_available";
       return artwork.status !== "archived";
     });
 
-  return filtered.sort((a, b) => {
+  const sorted = filtered.sort((a, b) => {
     if (sort === "newest") return b.created_at.localeCompare(a.created_at);
     if (sort === "price-asc") return (a.price_cents ?? Number.MAX_SAFE_INTEGER) - (b.price_cents ?? Number.MAX_SAFE_INTEGER);
     if (sort === "price-desc") return (b.price_cents ?? 0) - (a.price_cents ?? 0);
     return a.manual_sort_order - b.manual_sort_order;
   });
+  return typeof limit === "number" ? sorted.slice(0, limit) : sorted;
 }
 
-export async function listPublicArtworks(options: { sort?: Sort; availability?: Availability } = {}) {
+export async function listPublicArtworks(options: { sort?: Sort; availability?: Availability; limit?: number } = {}) {
   noStore();
   const sort = options.sort ?? "manual";
   const availability = options.availability ?? "all";
+  const limit = options.limit;
   const db = getDb();
-  if (!db) return filterDemo(sort, availability);
+  if (!db) return filterDemo(sort, availability, false, limit);
 
   await releaseExpiredReservations();
   const clauses = ["a.is_published = 1", "a.status != 'draft'"];
   if (availability === "available") clauses.push("a.status = 'available'");
-  if (availability === "sold") clauses.push("a.status = 'sold'");
+  if (availability === "sold") clauses.push("a.status IN ('sold', 'not_available')");
   if (availability === "all") clauses.push("a.status != 'archived'");
 
-  const rows = await all<Artwork & ArtworkImage>(
-    db
-      .prepare(
-        `SELECT a.*, i.id as image_id
+  const limitClause = typeof limit === "number" ? " LIMIT ?" : "";
+  const statement = db
+    .prepare(
+      `SELECT a.*
          FROM artworks a
-         LEFT JOIN artwork_images i ON i.artwork_id = a.id AND i.is_primary = 1
          WHERE ${clauses.join(" AND ")}
-         ORDER BY ${orderClause(sort)}`
-      )
-  );
+         ORDER BY ${orderClause(sort)}${limitClause}`
+    );
+  const rows = await all<Artwork>(typeof limit === "number" ? statement.bind(limit) : statement);
 
-  const artworks = await Promise.all(rows.map((row) => getArtworkById(row.id)));
-  return artworks.filter(Boolean) as ArtworkWithImages[];
+  return withImagesForArtworks(rows.map(normalizeArtwork));
 }
 
 export async function listFeaturedArtworks() {
@@ -96,8 +96,7 @@ export async function listFeaturedArtworks() {
         "SELECT * FROM artworks WHERE is_featured = 1 AND is_published = 1 AND status != 'archived' ORDER BY manual_sort_order ASC LIMIT 6"
       )
   );
-  const artworks = await Promise.all(rows.map((row) => getArtworkById(row.id)));
-  return artworks.filter(Boolean) as ArtworkWithImages[];
+  return withImagesForArtworks(rows.map(normalizeArtwork));
 }
 
 export async function getArtworkBySlug(slug: string) {
@@ -129,8 +128,7 @@ export async function listAdminArtworks() {
   const rows = await all<Artwork>(
     db.prepare("SELECT * FROM artworks ORDER BY manual_sort_order ASC, updated_at DESC")
   );
-  const artworks = await Promise.all(rows.map((row) => withImages(normalizeArtwork(row))));
-  return artworks;
+  return withImagesForArtworks(rows.map(normalizeArtwork));
 }
 
 export async function getAdjacentArtworks(artwork: Artwork) {
@@ -155,6 +153,37 @@ async function withImages(artwork: Artwork): Promise<ArtworkWithImages> {
       .bind(artwork.id)
   );
   return { ...applyReservationExpiry(artwork), images: images.map(normalizeImage) };
+}
+
+async function withImagesForArtworks(artworks: Artwork[]): Promise<ArtworkWithImages[]> {
+  const db = getDb();
+  if (!db || !artworks.length) {
+    return artworks.map((artwork) => {
+      const demo = demoArtworks.find((item) => item.id === artwork.id);
+      return demo ?? { ...artwork, images: [] };
+    });
+  }
+
+  const placeholders = artworks.map(() => "?").join(", ");
+  const images = await all<ArtworkImage>(
+    db
+      .prepare(
+        `SELECT * FROM artwork_images
+         WHERE artwork_id IN (${placeholders})
+         ORDER BY display_order ASC, created_at ASC`
+      )
+      .bind(...artworks.map((artwork) => artwork.id))
+  );
+  const imageMap = new Map<string, ArtworkImage[]>();
+  for (const image of images.map(normalizeImage)) {
+    const list = imageMap.get(image.artwork_id) ?? [];
+    list.push(image);
+    imageMap.set(image.artwork_id, list);
+  }
+  return artworks.map((artwork) => ({
+    ...applyReservationExpiry(artwork),
+    images: imageMap.get(artwork.id) ?? [],
+  }));
 }
 
 export async function upsertArtwork(input: Omit<Artwork, "created_at" | "updated_at" | "manual_sort_order"> & { manual_sort_order?: number }) {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArtworkGrid } from "../../../components/public/ArtworkGrid";
+import { ArtworkImageFrame } from "../../../components/public/ArtworkImageFrame";
 import { SiteFooter } from "../../../components/public/SiteFooter";
 import { SiteHeader } from "../../../components/public/SiteHeader";
 import { StatusBadge } from "../../../components/public/StatusBadge";
@@ -69,13 +70,7 @@ export default async function ArtworkPage({ params }: Props) {
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="grid gap-4">
             {primary ? (
-              <img
-                src={imageUrl(primary.object_key)}
-                alt={primary.alt_text}
-                width={primary.width ?? 1200}
-                height={primary.height ?? 1500}
-                className="w-full bg-[#F26716]/20 object-cover"
-              />
+              <ArtworkImageFrame image={primary} alt={primary.alt_text} foregroundClassName="p-3 sm:p-4" />
             ) : (
               <div className="aspect-[4/5] bg-[#F26716]/20" />
             )}
@@ -84,7 +79,7 @@ export default async function ArtworkPage({ params }: Props) {
                 {artwork.images
                   .filter((image) => image.id !== primary?.id)
                   .map((image) => (
-                    <img key={image.id} src={imageUrl(image.object_key)} alt={image.alt_text} width={image.width ?? 600} height={image.height ?? 750} loading="lazy" />
+                    <ArtworkImageFrame key={image.id} image={image} alt={image.alt_text} />
                   ))}
               </div>
             ) : null}

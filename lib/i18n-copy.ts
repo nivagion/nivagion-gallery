@@ -26,6 +26,7 @@ export const copy = {
       available: "available",
       reserved: "reserved",
       sold: "sold",
+      not_available: "not available",
       archived: "archived",
     } satisfies Record<ArtworkStatus, string>,
     home: {
@@ -48,7 +49,7 @@ export const copy = {
       high: "Price high to low",
       all: "All visible",
       available: "Available",
-      sold: "Sold archive",
+      sold: "Sold",
     },
     archive: {
       title: "Archive",
@@ -166,6 +167,7 @@ export const copy = {
       available: "dostupno",
       reserved: "rezervirano",
       sold: "prodano",
+      not_available: "nije dostupno",
       archived: "arhivirano",
     } satisfies Record<ArtworkStatus, string>,
     home: {
@@ -189,7 +191,7 @@ export const copy = {
       high: "Cijena od više",
       all: "Sve vidljivo",
       available: "Dostupno",
-      sold: "Prodana arhiva",
+      sold: "Prodano",
     },
     archive: {
       title: "Arhiva",

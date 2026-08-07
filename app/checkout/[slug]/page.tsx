@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckoutForm } from "../../../components/public/CheckoutForm";
+import { ArtworkImageFrame } from "../../../components/public/ArtworkImageFrame";
 import { SiteFooter } from "../../../components/public/SiteFooter";
 import { SiteHeader } from "../../../components/public/SiteHeader";
 import { getArtworkBySlug } from "../../../lib/db/artworks";
 import { getSiteSettings } from "../../../lib/db/settings";
 import { formatMoney } from "../../../lib/format";
-import { imageUrl } from "../../../lib/images";
 import { getLocale, localizedSettings, t } from "../../../lib/i18n";
 import { canonical } from "../../../lib/site";
 
@@ -52,7 +52,7 @@ export default async function CheckoutPage({ params }: Props) {
       <SiteHeader />
       <main className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
         <aside>
-          {primary ? <img src={imageUrl(primary.object_key)} alt={primary.alt_text} className="w-full" /> : null}
+          {primary ? <ArtworkImageFrame image={primary} alt={primary.alt_text} foregroundClassName="p-3 sm:p-4" /> : null}
           <h1 className="editorial-title mt-6 text-4xl">{artwork.title}</h1>
           <p className="mt-2 text-[#084A24]">{formatMoney(artwork.price_cents, artwork.currency)}</p>
           <p className="mt-6 text-sm leading-6 text-[#084A24]">

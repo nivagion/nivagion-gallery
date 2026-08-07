@@ -1,4 +1,4 @@
-export type ArtworkStatus = "draft" | "available" | "reserved" | "sold" | "archived";
+export type ArtworkStatus = "draft" | "available" | "reserved" | "sold" | "not_available" | "archived";
 export type PaymentStatus = "request" | "pending" | "paid" | "cancelled" | "refunded";
 export type FulfilmentStatus = "unfulfilled" | "shipped" | "cancelled" | "refunded";
 

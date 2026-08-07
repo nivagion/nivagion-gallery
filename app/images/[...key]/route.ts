@@ -10,6 +10,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ key: strin
   const headers = new Headers();
   object.writeHttpMetadata(headers);
   headers.set("etag", object.httpEtag);
+  headers.set("content-length", String(object.size));
   headers.set("cache-control", "public, max-age=31536000, immutable");
   return new Response(object.body, { headers });
 }

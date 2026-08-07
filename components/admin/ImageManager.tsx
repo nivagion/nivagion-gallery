@@ -2,7 +2,7 @@
 
 import { GripVertical, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { imageUrl } from "../../lib/images";
+import { ArtworkImageFrame } from "../public/ArtworkImageFrame";
 import type { ArtworkImage } from "../../lib/types";
 
 export function ImageManager({ artworkId, images }: { artworkId: string; images: ArtworkImage[] }) {
@@ -49,7 +49,7 @@ export function ImageManager({ artworkId, images }: { artworkId: string; images:
           }}
           className="border border-[#084A24]/25 bg-[#F2EDD5] p-3"
         >
-          <img src={imageUrl(image.object_key)} alt={image.alt_text} className="aspect-[4/5] w-full object-cover" />
+          <ArtworkImageFrame image={image} alt={image.alt_text} foregroundClassName="!p-2" />
           <figcaption className="mt-3 grid gap-3 text-sm text-[#084A24]">
             <span>{image.is_primary ? "Primary · " : ""}{image.alt_text}</span>
             <div className="flex flex-wrap gap-2">

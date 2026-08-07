@@ -332,7 +332,7 @@ export const demoArtworks: ArtworkWithImages[] = [
     description: "Demo sold artwork entry for testing the gallery.",
     price_cents: 27000,
     currency: "EUR",
-    status: "sold",
+    status: "not_available",
     is_featured: false,
     is_published: true,
     manual_sort_order: 90,

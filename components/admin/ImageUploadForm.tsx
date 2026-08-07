@@ -1,10 +1,11 @@
 "use client";
 
 import { Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function ImageUploadForm({ artworkId }: { artworkId: string }) {
-  const form = useRef<HTMLFormElement>(null);
+  const router = useRouter();
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -12,21 +13,28 @@ export function ImageUploadForm({ artworkId }: { artworkId: string }) {
     event.preventDefault();
     setPending(true);
     setMessage("");
-    const response = await fetch(`/admin/api/artworks/${artworkId}/images`, {
-      method: "POST",
-      body: new FormData(event.currentTarget),
-    });
-    const result = (await response.json()) as { message?: string };
-    setPending(false);
-    setMessage(result.message ?? (response.ok ? "Uploaded." : "Upload failed."));
-    if (response.ok) {
-      form.current?.reset();
-      window.location.reload();
+    try {
+      const response = await fetch(`/admin/api/artworks/${artworkId}/images`, {
+        method: "POST",
+        body: new FormData(event.currentTarget),
+      });
+      const contentType = response.headers.get("content-type") ?? "";
+      const result = contentType.includes("application/json")
+        ? ((await response.json()) as { message?: string })
+        : { message: await response.text() };
+      setMessage(result.message || (response.ok ? "Uploaded." : "Upload failed."));
+      if (response.ok) {
+        router.refresh();
+      }
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Upload failed.");
+    } finally {
+      setPending(false);
     }
   }
 
   return (
-    <form ref={form} onSubmit={submit} className="grid gap-4 border border-[#084A24]/25 bg-[#F2EDD5] p-5">
+    <form onSubmit={submit} className="grid gap-4 border border-[#084A24]/25 bg-[#F2EDD5] p-5">
       <h2 className="editorial-title text-2xl">Images</h2>
       {message ? <p className="text-sm text-[#084A24]">{message}</p> : null}
       <label className="label">
