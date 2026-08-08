@@ -101,6 +101,21 @@ export const imageUploadSchema = z.object({
   isPrimary: z.coerce.boolean().default(false),
 });
 
+export const batchArtworkDefaultsSchema = artworkFormSchema.pick({
+  year: true,
+  medium: true,
+  surface: true,
+  width_cm: true,
+  height_cm: true,
+  description: true,
+  price_cents: true,
+  currency: true,
+  status: true,
+  revolut_payment_url: true,
+}).extend({
+  is_published: z.coerce.boolean().default(false),
+});
+
 export const orderUpdateSchema = z.object({
   paymentStatus: z.enum(["request", "pending", "paid", "cancelled", "refunded"]),
   fulfilmentStatus: z.enum(["unfulfilled", "shipped", "cancelled", "refunded"]),

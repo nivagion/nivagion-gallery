@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Copy, ListOrdered, Pencil, Plus } from "lucide-react";
+import { Copy, Images, ListOrdered, Pencil, Plus } from "lucide-react";
 import { DeleteArtworkButton } from "../../../components/admin/DeleteArtworkButton";
 import { ArtworkImageFrame, artworkOrientation } from "../../../components/public/ArtworkImageFrame";
 import { duplicateArtworkAction } from "../actions";
@@ -20,6 +20,10 @@ export default async function AdminArtworksPage() {
           <Link href="/admin/artworks/order" className="button button-secondary">
             <ListOrdered size={18} aria-hidden />
             Manual order
+          </Link>
+          <Link href="/admin/artworks/multiple" className="button button-secondary">
+            <Images size={18} aria-hidden />
+            Add multiple
           </Link>
           <Link href="/admin/artworks/new" className="button">
             <Plus size={18} aria-hidden />
