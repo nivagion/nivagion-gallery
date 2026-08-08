@@ -84,6 +84,8 @@ export type ContactMessage = {
   ip_hash: string | null;
   created_at: string;
   reviewed_at: string | null;
+  is_starred: boolean;
+  is_trashed: boolean;
 };
 
 export type SiteSettings = {

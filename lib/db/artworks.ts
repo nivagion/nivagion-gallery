@@ -288,6 +288,28 @@ export async function updateArtworkStatus(artworkId: string, status: ArtworkStat
     .run();
 }
 
+export async function updateArtworkStatuses(artworkIds: string[], status: ArtworkStatus) {
+  const db = getDb();
+  if (!db) throw new Error("D1 database binding is required.");
+  if (!artworkIds.length) return;
+  const now = new Date().toISOString();
+  await db.batch(
+    artworkIds.map((artworkId) =>
+      db
+        .prepare(
+          `UPDATE artworks
+           SET status = ?,
+               is_published = CASE WHEN ? = 'draft' THEN 0 ELSE 1 END,
+               published_at = CASE WHEN ? != 'draft' AND published_at IS NULL THEN ? ELSE published_at END,
+               updated_at = ?,
+               reserved_until = CASE WHEN ? != 'reserved' THEN NULL ELSE reserved_until END
+           WHERE id = ?`
+        )
+        .bind(status, status, status, now, now, status, artworkId)
+    )
+  );
+}
+
 export async function deleteArtworkById(artworkId: string) {
   const db = getDb();
   if (!db) throw new Error("D1 database binding is required.");

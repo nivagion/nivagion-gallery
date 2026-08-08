@@ -8,10 +8,12 @@ import {
   getArtworkById,
   updateArtworkOrder,
   updateArtworkStatus,
+  updateArtworkStatuses,
   upsertArtwork,
 } from "../../lib/db/artworks";
 import { updateOrderStatus } from "../../lib/db/orders";
 import { updateSiteSettings } from "../../lib/db/settings";
+import { updateMessageStar, updateMessageTrash } from "../../lib/db/messages";
 import { defaultSiteSettings } from "../../lib/site";
 import { id } from "../../lib/db/client";
 import { deleteArtworkObject } from "../../lib/images";
@@ -19,6 +21,7 @@ import { assertSameOrigin, requireAdmin } from "../../lib/security";
 import { slugify } from "../../lib/slug";
 import { artworkFormSchema, orderUpdateSchema } from "../../lib/validation/forms";
 import type { SiteSettings } from "../../lib/types";
+import type { ArtworkStatus } from "../../lib/types";
 
 export async function saveArtwork(_: unknown, formData: FormData) {
   await requireAdmin();
@@ -112,6 +115,43 @@ export async function reorderArtworks(formData: FormData) {
   revalidatePath("/admin/artworks");
   revalidatePath("/admin/artworks/order");
   revalidatePath("/works");
+}
+
+export async function bulkUpdateArtworkStatus(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const ids = formData.getAll("ids").map(String).filter(Boolean);
+  const status = String(formData.get("status") ?? "");
+  if (!["draft", "available", "reserved", "sold", "not_available", "archived"].includes(status)) {
+    throw new Error("Choose a valid status.");
+  }
+  await updateArtworkStatuses(ids, status as ArtworkStatus);
+  revalidatePath("/");
+  revalidatePath("/works");
+  revalidatePath("/archive");
+  revalidatePath("/admin/artworks");
+  revalidatePath("/admin/artworks/order");
+}
+
+export async function toggleMessageStar(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  await updateMessageStar(String(formData.get("id") ?? ""), String(formData.get("starred")) !== "true");
+  revalidatePath("/admin/messages");
+}
+
+export async function moveMessageToTrash(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  await updateMessageTrash(String(formData.get("id") ?? ""), true);
+  revalidatePath("/admin/messages");
+}
+
+export async function restoreMessageFromTrash(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  await updateMessageTrash(String(formData.get("id") ?? ""), false);
+  revalidatePath("/admin/messages");
 }
 
 export async function saveOrder(formData: FormData) {
