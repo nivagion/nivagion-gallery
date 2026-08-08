@@ -9,7 +9,12 @@ import {
   updateImageOrder,
 } from "../../../../../../lib/db/artworks";
 import { id } from "../../../../../../lib/db/client";
-import { deleteArtworkObject, putArtworkImage } from "../../../../../../lib/images";
+import {
+  artworkImageObjectKey,
+  deleteArtworkObject,
+  putArtworkImage,
+  validateProcessedArtworkImageFile,
+} from "../../../../../../lib/images";
 import { assertSameOrigin, requireAdmin } from "../../../../../../lib/security";
 import { imageUploadSchema } from "../../../../../../lib/validation/forms";
 
@@ -41,8 +46,9 @@ export async function POST(request: Request, { params }: Params) {
   try {
     for (const [index, file] of files.entries()) {
       const imageId = id("img");
-      const baseKey = `artworks/${artworkId}/${imageId}`;
-      const image = await putArtworkImage(baseKey, file);
+      const baseKey = artworkImageObjectKey(artworkId, imageId);
+      const image = await validateProcessedArtworkImageFile(file);
+      await putArtworkImage(baseKey, file);
       uploadedObjectKeys.push(baseKey);
       await insertArtworkImage({
         id: imageId,

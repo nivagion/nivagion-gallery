@@ -4,6 +4,7 @@ export type Env = {
   DB?: D1Database;
   ARTWORK_IMAGES?: R2Bucket;
   SITE_URL?: string;
+  NEXT_PUBLIC_MEDIA_BASE_URL?: string;
   ADMIN_EMAIL?: string;
   ADMIN_DEV_BYPASS?: string;
   TURNSTILE_SITE_KEY?: string;
@@ -16,6 +17,7 @@ export function getEnv(): Env {
   } catch {
     return {
       SITE_URL: process.env.SITE_URL,
+      NEXT_PUBLIC_MEDIA_BASE_URL: process.env.NEXT_PUBLIC_MEDIA_BASE_URL,
       ADMIN_EMAIL: process.env.ADMIN_EMAIL,
       ADMIN_DEV_BYPASS: process.env.ADMIN_DEV_BYPASS,
       TURNSTILE_SITE_KEY: process.env.TURNSTILE_SITE_KEY,

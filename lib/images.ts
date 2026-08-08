@@ -1,8 +1,11 @@
 import { getArtworkBucket } from "./db/client";
 import type { ArtworkImage } from "./types";
 
-const maxFileSizeMb = 95;
-const maxFileSize = maxFileSizeMb * 1024 * 1024;
+const maxSourceFileSizeMb = 95;
+const maxProcessedFileSizeMb = 8;
+const maxSourceFileSize = maxSourceFileSizeMb * 1024 * 1024;
+const maxProcessedFileSize = maxProcessedFileSizeMb * 1024 * 1024;
+const productionMediaBaseUrl = "https://media.nivagion.com";
 const signatures = {
   jpeg: { mime: "image/jpeg", ext: "jpg" },
   png: { mime: "image/png", ext: "png" },
@@ -17,9 +20,14 @@ type ImageMetadata = ImageKind & {
 };
 
 export function imageUrl(objectKey: string, version?: string | number | null) {
-  const path = objectKey.startsWith("/")
-    ? objectKey
-    : `/images/${encodeURIComponent(objectKey).replace(/%2F/g, "/")}`;
+  const cleanKey = objectKey.split("?", 1)[0] ?? "";
+  const mediaBaseUrl = getMediaBaseUrl();
+  if (!cleanKey.startsWith("/") && mediaBaseUrl) {
+    return `${mediaBaseUrl}/${encodeR2Key(cleanKey)}`;
+  }
+  const path = cleanKey.startsWith("/")
+    ? cleanKey
+    : `/images/${encodeR2Key(cleanKey)}`;
   if (!version) return path;
   const separator = path.includes("?") ? "&" : "?";
   return `${path}${separator}v=${encodeURIComponent(String(version))}`;
@@ -29,19 +37,38 @@ export function artworkImageUrl(image: Pick<ArtworkImage, "object_key" | "file_s
   return imageUrl(image.object_key, `${image.file_size}-${image.created_at}`);
 }
 
+export function artworkImageObjectKey(artworkId: string, imageId: string) {
+  return `artworks/${artworkId}/${imageId}.webp`;
+}
+
 export async function validateImageFile(file: File) {
-  if (file.size <= 0 || file.size > maxFileSize) {
-    throw new Error(`Images must be between 1 byte and ${maxFileSizeMb} MB.`);
+  if (file.size <= 0 || file.size > maxSourceFileSize) {
+    throw new Error(`Images must be between 1 byte and ${maxSourceFileSizeMb} MB.`);
   }
   const buffer = new Uint8Array(await file.slice(0, 32).arrayBuffer());
   return validateImageBuffer(buffer, file.type);
 }
 
+export async function validateProcessedArtworkImageFile(file: File) {
+  if (file.size <= 0 || file.size > maxProcessedFileSize) {
+    throw new Error(`Processed images must be between 1 byte and ${maxProcessedFileSizeMb} MB.`);
+  }
+  if (file.type !== "image/webp") {
+    throw new Error("Processed artwork uploads must be WebP images.");
+  }
+  const buffer = new Uint8Array(await file.arrayBuffer());
+  const metadata = validateImageBuffer(buffer, file.type);
+  if (metadata.mime !== "image/webp") {
+    throw new Error("Processed artwork uploads must contain WebP image data.");
+  }
+  return metadata;
+}
+
 export async function putArtworkImage(key: string, file: File) {
   const bucket = getArtworkBucket();
   if (!bucket) throw new Error("R2 bucket binding is required for image uploads.");
-  if (file.size <= 0 || file.size > maxFileSize) {
-    throw new Error(`Images must be between 1 byte and ${maxFileSizeMb} MB.`);
+  if (file.size <= 0 || file.size > maxSourceFileSize) {
+    throw new Error(`Images must be between 1 byte and ${maxSourceFileSizeMb} MB.`);
   }
   const buffer = await file.arrayBuffer();
   const bytes = new Uint8Array(buffer);
@@ -56,6 +83,21 @@ export async function putArtworkImage(key: string, file: File) {
     },
   });
   return metadata;
+}
+
+function encodeR2Key(key: string) {
+  return key
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
+function getMediaBaseUrl() {
+  if (process.env.NODE_ENV === "development") return "";
+  const configured = process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim();
+  if (configured) return configured.replace(/\/+$/, "");
+  if (process.env.NODE_ENV === "production") return productionMediaBaseUrl;
+  return "";
 }
 
 export async function deleteArtworkObject(key: string) {
