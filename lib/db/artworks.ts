@@ -310,6 +310,20 @@ export async function updateArtworkStatuses(artworkIds: string[], status: Artwor
   );
 }
 
+export async function updateArtworkPrices(artworkIds: string[], priceCents: number) {
+  const db = getDb();
+  if (!db) throw new Error("D1 database binding is required.");
+  if (!artworkIds.length) return;
+  const now = new Date().toISOString();
+  await db.batch(
+    artworkIds.map((artworkId) =>
+      db
+        .prepare("UPDATE artworks SET price_cents = ?, updated_at = ? WHERE id = ?")
+        .bind(priceCents, now, artworkId)
+    )
+  );
+}
+
 export async function deleteArtworkById(artworkId: string) {
   const db = getDb();
   if (!db) throw new Error("D1 database binding is required.");

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Copy, Pencil, RefreshCw } from "lucide-react";
+import { Copy, Euro, Pencil, RefreshCw } from "lucide-react";
 import { useMemo, useState } from "react";
-import { bulkUpdateArtworkStatus, duplicateArtworkAction } from "../../app/admin/actions";
+import { bulkUpdateArtworkPrice, bulkUpdateArtworkStatus, duplicateArtworkAction } from "../../app/admin/actions";
 import { formatArtworkStatus, selectableArtworkStatuses } from "../../lib/artwork-status";
 import { formatMoney } from "../../lib/format";
 import type { ArtworkWithImages } from "../../lib/types";
@@ -25,30 +25,55 @@ export function AdminArtworkTable({ artworks }: { artworks: ArtworkWithImages[] 
 
   return (
     <section className="grid gap-4">
-      <form action={bulkUpdateArtworkStatus} className="flex flex-wrap items-end gap-3 border border-[#084A24]/25 bg-[#F2EDD5] p-4">
-        {selectedIds.map((id) => (
-          <input key={id} type="hidden" name="ids" value={id} />
-        ))}
-        <div className="grid gap-1">
-          <label className="text-xs uppercase tracking-[0.08em] text-[#084A24]" htmlFor="bulk-status">
-            Selected status
-          </label>
-          <select id="bulk-status" name="status" className="field min-w-48" defaultValue="available">
-            {selectableArtworkStatuses.map((option) => (
-              <option key={option} value={option}>
-                {formatArtworkStatus(option)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button className="button button-secondary" disabled={!selectedIds.length}>
-          <RefreshCw size={18} aria-hidden />
-          Update {selectedIds.length || ""} selected
-        </button>
+      <div className="flex flex-wrap items-end gap-3 border border-[#084A24]/25 bg-[#F2EDD5] p-4">
+        <form action={bulkUpdateArtworkStatus} className="flex flex-wrap items-end gap-3">
+          {selectedIds.map((id) => (
+            <input key={id} type="hidden" name="ids" value={id} />
+          ))}
+          <div className="grid gap-1">
+            <label className="text-xs uppercase tracking-[0.08em] text-[#084A24]" htmlFor="bulk-status">
+              Selected status
+            </label>
+            <select id="bulk-status" name="status" className="field min-w-48" defaultValue="available">
+              {selectableArtworkStatuses.map((option) => (
+                <option key={option} value={option}>
+                  {formatArtworkStatus(option)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button className="button button-secondary" disabled={!selectedIds.length}>
+            <RefreshCw size={18} aria-hidden />
+            Update {selectedIds.length || ""} selected
+          </button>
+        </form>
+
+        <form action={bulkUpdateArtworkPrice} className="flex flex-wrap items-end gap-3">
+          {selectedIds.map((id) => (
+            <input key={id} type="hidden" name="ids" value={id} />
+          ))}
+          <div className="grid gap-1">
+            <label className="text-xs uppercase tracking-[0.08em] text-[#084A24]" htmlFor="bulk-price">
+              Selected price
+            </label>
+            <input
+              id="bulk-price"
+              name="price_eur"
+              className="field w-36"
+              inputMode="decimal"
+              placeholder="EUR"
+            />
+          </div>
+          <button className="button button-secondary" disabled={!selectedIds.length}>
+            <Euro size={18} aria-hidden />
+            Set price
+          </button>
+        </form>
+
         <button type="button" className="button button-secondary" onClick={toggleAll} disabled={!artworks.length}>
           {allSelected ? "Deselect all" : "Select all"}
         </button>
-      </form>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left text-sm">

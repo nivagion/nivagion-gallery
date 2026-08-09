@@ -7,6 +7,7 @@ import {
   duplicateArtwork,
   getArtworkById,
   updateArtworkOrder,
+  updateArtworkPrices,
   updateArtworkStatus,
   updateArtworkStatuses,
   upsertArtwork,
@@ -131,6 +132,21 @@ export async function bulkUpdateArtworkStatus(formData: FormData) {
   revalidatePath("/archive");
   revalidatePath("/admin/artworks");
   revalidatePath("/admin/artworks/order");
+}
+
+export async function bulkUpdateArtworkPrice(formData: FormData) {
+  await requireAdmin();
+  await assertSameOrigin();
+  const ids = formData.getAll("ids").map(String).filter(Boolean);
+  const normalized = String(formData.get("price_eur") ?? "").trim().replace(",", ".");
+  if (!/^\d+(\.\d{1,2})?$/.test(normalized)) {
+    throw new Error("Enter a valid EUR amount.");
+  }
+  await updateArtworkPrices(ids, Math.round(Number(normalized) * 100));
+  revalidatePath("/");
+  revalidatePath("/works");
+  revalidatePath("/archive");
+  revalidatePath("/admin/artworks");
 }
 
 export async function toggleMessageStar(formData: FormData) {
