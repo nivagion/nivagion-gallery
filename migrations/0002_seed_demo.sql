@@ -30,7 +30,7 @@ INSERT OR IGNORE INTO artwork_images (
 INSERT OR IGNORE INTO site_settings (key, value, updated_at) VALUES
 ('siteDescription', 'I make various marker drawings and spray paintings.', '2026-08-04T00:00:00.000Z'),
 ('siteDescriptionHr', 'Izrađujem razne crteže markerima i spray-paint radove.', '2026-08-04T00:00:00.000Z'),
-('contactEmail', 'admin@example.com', '2026-08-04T00:00:00.000Z'),
+('contactEmail', 'artist@example.com', '2026-08-04T00:00:00.000Z'),
 ('homepageIntroduction', 'Marker drawings and spray-paint. Originals only.', '2026-08-04T00:00:00.000Z'),
 ('homepageIntroductionHr', 'Crteži markerima i spray-paint radovi. Samo originali.', '2026-08-04T00:00:00.000Z'),
 ('artistBiography', 'I''m Leo. I draw for fun and sell the pieces I want to let go.', '2026-08-04T00:00:00.000Z'),

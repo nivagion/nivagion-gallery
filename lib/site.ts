@@ -6,7 +6,7 @@ export const siteConfig = {
   domain: "https://nivagion.com",
   artistLocation: "Croatia",
   primaryMedia: "marker drawings and spray-paint",
-  currentContactEmail: "admin@example.com",
+  currentContactEmail: "artist@example.com",
   defaultCurrency: "EUR",
   defaultLocale: "en-HR",
   description: "I make various marker drawings and spray paintings.",
