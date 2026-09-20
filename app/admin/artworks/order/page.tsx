@@ -7,7 +7,7 @@ export default async function AdminArtworkOrderPage() {
   const artworks = await listAdminArtworks();
 
   return (
-    <div className="grid max-w-3xl gap-8">
+    <div className="grid min-w-0 gap-8">
       <div>
         <Link href="/admin/artworks" className="inline-flex items-center gap-2 text-sm underline underline-offset-4">
           <ArrowLeft size={16} aria-hidden />
