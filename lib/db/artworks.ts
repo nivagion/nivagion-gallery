@@ -4,7 +4,7 @@ import { boolFromDb, getDb, all, first, id } from "./client";
 import { demoArtworks } from "./seed-data";
 
 type Sort = "manual" | "newest" | "price-asc" | "price-desc";
-type Availability = "all" | "available" | "sold";
+type Availability = "all" | "available" | "unavailable" | "sold";
 
 function normalizeArtwork(row: Artwork): Artwork {
   return {
@@ -22,7 +22,7 @@ function normalizeImage(row: ArtworkImage): ArtworkImage {
 }
 
 function orderClause(sort: Sort) {
-  if (sort === "newest") return "published_at DESC, created_at DESC";
+  if (sort === "newest") return "created_at DESC, id DESC";
   if (sort === "price-asc") return "price_cents IS NULL, price_cents ASC, manual_sort_order ASC";
   if (sort === "price-desc") return "price_cents DESC, manual_sort_order ASC";
   return "manual_sort_order ASC, published_at DESC";
@@ -45,12 +45,15 @@ function filterDemo(sort: Sort, availability: Availability, includeDrafts = fals
     .filter((artwork) => includeDrafts || (artwork.is_published && artwork.status !== "draft"))
     .filter((artwork) => {
       if (availability === "available") return artwork.status === "available";
+      if (availability === "unavailable") {
+        return artwork.status === "reserved" || artwork.status === "sold" || artwork.status === "not_available";
+      }
       if (availability === "sold") return artwork.status === "sold" || artwork.status === "not_available";
       return artwork.status !== "archived";
     });
 
   const sorted = filtered.sort((a, b) => {
-    if (sort === "newest") return b.created_at.localeCompare(a.created_at);
+    if (sort === "newest") return b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id);
     if (sort === "price-asc") return (a.price_cents ?? Number.MAX_SAFE_INTEGER) - (b.price_cents ?? Number.MAX_SAFE_INTEGER);
     if (sort === "price-desc") return (b.price_cents ?? 0) - (a.price_cents ?? 0);
     return a.manual_sort_order - b.manual_sort_order;
@@ -69,6 +72,7 @@ export async function listPublicArtworks(options: { sort?: Sort; availability?: 
   await releaseExpiredReservations();
   const clauses = ["a.is_published = 1", "a.status != 'draft'"];
   if (availability === "available") clauses.push("a.status = 'available'");
+  if (availability === "unavailable") clauses.push("a.status IN ('reserved', 'sold', 'not_available')");
   if (availability === "sold") clauses.push("a.status IN ('sold', 'not_available')");
   if (availability === "all") clauses.push("a.status != 'archived'");
 

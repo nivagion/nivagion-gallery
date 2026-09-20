@@ -24,9 +24,11 @@ export default async function WorksPage({ searchParams }: Props) {
   const sort = ["manual", "newest", "price-asc", "price-desc"].includes(params.sort ?? "")
     ? (params.sort as "manual" | "newest" | "price-asc" | "price-desc")
     : "manual";
-  const availability = ["all", "available", "sold"].includes(params.availability ?? "")
-    ? (params.availability as "all" | "available" | "sold")
-    : "all";
+  const availability = params.availability === "sold"
+    ? "unavailable"
+    : ["all", "available", "unavailable"].includes(params.availability ?? "")
+      ? (params.availability as "all" | "available" | "unavailable")
+      : "all";
   const [rawSettings, artworks] = await Promise.all([getSiteSettings(), listPublicArtworks({ sort, availability })]);
   const settings = localizedSettings(rawSettings, locale);
 

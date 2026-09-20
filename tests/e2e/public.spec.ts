@@ -7,8 +7,8 @@ test("homepage exposes featured art and navigation", async ({ page }) => {
   await expect(page.getByText("DEMO: Marker Study Current")).toBeVisible();
 });
 
-test("works page can filter sold archive", async ({ page }) => {
-  await page.goto("/works?availability=sold");
+test("works page can filter unavailable artwork", async ({ page }) => {
+  await page.goto("/works?availability=unavailable");
   await expect(page.getByRole("heading", { name: "Works" })).toBeVisible();
   await expect(page.getByText("DEMO: Archive Piece")).toBeVisible();
 });

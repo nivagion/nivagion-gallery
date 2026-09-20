@@ -33,7 +33,7 @@ export function WorkSortForm({ locale = "en" }: { locale?: Locale }) {
         <select className="field min-w-44" defaultValue={search.get("availability") ?? "all"} onChange={(event) => update("availability", event.target.value)}>
           <option value="all">{c.works.all}</option>
           <option value="available">{c.works.available}</option>
-          <option value="sold">{c.works.sold}</option>
+          <option value="unavailable">{c.works.unavailable}</option>
         </select>
       </label>
     </div>

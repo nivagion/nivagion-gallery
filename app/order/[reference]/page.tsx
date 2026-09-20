@@ -41,7 +41,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
         </p>
         <dl className="mt-8 grid gap-4 border-y border-[#084A24]/25 py-6 text-sm">
           <Row label={c.order.artwork} value={order.artwork_title ?? order.artwork_id} />
-          <Row label={c.order.total} value={formatMoney(order.total_price_cents, order.currency)} />
+          <Row label={c.order.total} value={formatMoney(order.total_price_cents, order.currency, locale)} />
           <Row label={c.order.payment} value={order.payment_status} />
           <Row label={c.order.fulfilment} value={order.fulfilment_status} />
         </dl>

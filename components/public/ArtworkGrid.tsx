@@ -5,6 +5,7 @@ import type { Locale } from "../../lib/i18n-copy";
 import { t } from "../../lib/i18n-copy";
 import { ArtworkImageFrame, artworkOrientation } from "./ArtworkImageFrame";
 import { StatusBadge } from "./StatusBadge";
+import { publicArtworkTitle } from "../../lib/batch-artworks";
 
 export function ArtworkGrid({ artworks, locale = "en" }: { artworks: ArtworkWithImages[]; locale?: Locale }) {
   const c = t(locale);
@@ -20,6 +21,7 @@ export function ArtworkGrid({ artworks, locale = "en" }: { artworks: ArtworkWith
     <div className="flex flex-wrap justify-center gap-x-6 gap-y-12">
       {artworks.map((artwork) => {
         const primary = artwork.images.find((image) => image.is_primary) ?? artwork.images[0];
+        const title = publicArtworkTitle(artwork.title);
         const orientation = artworkOrientation(primary);
         const cardClass =
           orientation === "landscape"
@@ -40,12 +42,12 @@ export function ArtworkGrid({ artworks, locale = "en" }: { artworks: ArtworkWith
                 <div className="mb-3">
                   <StatusBadge status={artwork.status} locale={locale} />
                 </div>
-                <h2 className="editorial-title text-xl">{artwork.title}</h2>
+                {title ? <h2 className="editorial-title text-xl">{title}</h2> : null}
                 <p className="mt-1 text-sm text-[#084A24]">
                   {artwork.medium} · {c.common.originalNotPrint}
                 </p>
               </div>
-              <p className="whitespace-nowrap text-sm">{formatMoney(artwork.price_cents, artwork.currency)}</p>
+              <p className="whitespace-nowrap text-sm">{formatMoney(artwork.price_cents, artwork.currency, locale)}</p>
             </div>
           </Link>
         );

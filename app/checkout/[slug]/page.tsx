@@ -10,6 +10,7 @@ import { getSiteSettings } from "../../../lib/db/settings";
 import { formatMoney } from "../../../lib/format";
 import { getLocale, localizedSettings, t } from "../../../lib/i18n";
 import { canonical } from "../../../lib/site";
+import { publicArtworkTitle } from "../../../lib/batch-artworks";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -47,14 +48,15 @@ export default async function CheckoutPage({ params }: Props) {
     );
   }
   const primary = artwork.images.find((image) => image.is_primary) ?? artwork.images[0];
+  const title = publicArtworkTitle(artwork.title);
   return (
     <>
       <SiteHeader />
       <main className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
         <aside>
           {primary ? <ArtworkImageFrame image={primary} alt={primary.alt_text} foregroundClassName="p-3 sm:p-4" /> : null}
-          <h1 className="editorial-title mt-6 text-4xl">{artwork.title}</h1>
-          <p className="mt-2 text-[#084A24]">{formatMoney(artwork.price_cents, artwork.currency)}</p>
+          {title ? <h1 className="editorial-title mt-6 text-4xl">{title}</h1> : null}
+          <p className="mt-2 text-[#084A24]">{formatMoney(artwork.price_cents, artwork.currency, locale)}</p>
           <p className="mt-6 text-sm leading-6 text-[#084A24]">
             {c.checkout.noCards}
           </p>

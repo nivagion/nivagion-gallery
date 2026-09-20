@@ -1,5 +1,11 @@
 export const unnamedArtworkTitle = "Unnamed artwork";
 
+export function publicArtworkTitle(title: string) {
+  return title.trim().toLocaleLowerCase("en-US") === unnamedArtworkTitle.toLocaleLowerCase("en-US")
+    ? ""
+    : title;
+}
+
 export function altTextFromFilename(filename: string) {
   const withoutExtension = filename
     .replace(/\.[^.\\/]+$/, "")

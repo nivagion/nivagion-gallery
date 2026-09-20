@@ -12,6 +12,7 @@ import { formatDimensions, formatMoney } from "../../../lib/format";
 import { imageUrl } from "../../../lib/images";
 import { getLocale, localizedSettings, t } from "../../../lib/i18n";
 import { canonical, siteConfig } from "../../../lib/site";
+import { publicArtworkTitle } from "../../../lib/batch-artworks";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -44,6 +45,7 @@ export default async function ArtworkPage({ params }: Props) {
   const settings = localizedSettings(rawSettings, locale);
   const primary = artwork.images.find((image) => image.is_primary) ?? artwork.images[0];
   const canPurchase = artwork.status === "available";
+  const title = publicArtworkTitle(artwork.title);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -89,12 +91,12 @@ export default async function ArtworkPage({ params }: Props) {
               <StatusBadge status={artwork.status} locale={locale} />
               <span className="text-sm text-[#084A24]">{c.common.originalNotPrint}</span>
             </div>
-            <h1 className="editorial-title mt-6 text-5xl">{artwork.title}</h1>
+            {title ? <h1 className="editorial-title mt-6 text-5xl">{title}</h1> : null}
             <dl className="mt-8 grid gap-4 border-y border-[#084A24]/25 py-6 text-sm">
               <Detail label={c.artwork.medium} value={artwork.medium} />
               <Detail label={c.artwork.surface} value={artwork.surface ?? c.artwork.defaultSurface} />
               <Detail label={c.artwork.dimensions} value={artwork.width_cm && artwork.height_cm ? formatDimensions(artwork.width_cm, artwork.height_cm) : c.artwork.defaultDimensions} />
-              <Detail label={c.artwork.price} value={formatMoney(artwork.price_cents, artwork.currency)} />
+              <Detail label={c.artwork.price} value={formatMoney(artwork.price_cents, artwork.currency, locale)} />
             </dl>
             {artwork.description ? <p className="mt-6 leading-8 text-[#04261E]">{artwork.description}</p> : null}
             <p className="mt-6 text-sm leading-6 text-[#084A24]">{settings.defaultShippingMessage}</p>

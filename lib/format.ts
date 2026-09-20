@@ -1,6 +1,8 @@
-export function formatMoney(cents: number | null | undefined, currency = "EUR") {
-  if (cents == null) return "Price on request";
-  return new Intl.NumberFormat("en-HR", {
+import type { Locale } from "./i18n-copy";
+
+export function formatMoney(cents: number | null | undefined, currency = "EUR", locale: Locale = "en") {
+  if (cents == null) return locale === "hr" ? "Cijena na upit" : "Price on request";
+  return new Intl.NumberFormat(locale === "hr" ? "hr-HR" : "en-HR", {
     style: "currency",
     currency,
     maximumFractionDigits: 0,
