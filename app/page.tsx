@@ -35,6 +35,14 @@ export default async function HomePage() {
               <h2 className="editorial-title text-3xl font-black">{c.home.featured}</h2>
             </div>
             <ArtworkGrid artworks={visible} locale={locale} />
+            <div className="flex justify-center pt-10 sm:pt-14">
+              <Link
+                href="/works"
+                className="editorial-title inline-flex items-center justify-center border border-[#04261E] px-8 py-4 text-center text-2xl font-black transition-colors hover:bg-[#04261E] hover:text-[#F2EDD5] sm:px-12 sm:py-5 sm:text-3xl"
+              >
+                {c.common.moreArtworks}
+              </Link>
+            </div>
           </div>
         </section>
         <section className="border-y border-[#084A24]/25 bg-[#F2EDD5] px-4 py-12 text-[#04261E] sm:px-6 lg:px-8">
