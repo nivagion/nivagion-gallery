@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 
 const host = "127.0.0.1";
-const port = "3000";
+const port = process.env.PLAYWRIGHT_PORT ?? "3000";
 const baseUrl = `http://${host}:${port}`;
 
 const server = spawn(

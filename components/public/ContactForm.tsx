@@ -6,7 +6,7 @@ import { submitContactForm } from "../../app/contact/actions";
 import type { Locale } from "../../lib/i18n-copy";
 import { t } from "../../lib/i18n-copy";
 
-export function ContactForm({ locale = "en" }: { locale?: Locale }) {
+export function ContactForm({ locale = "en", artworkReference = "" }: { locale?: Locale; artworkReference?: string }) {
   const [state, action, pending] = useActionState(submitContactForm, null);
   const c = t(locale);
   return (
@@ -28,7 +28,7 @@ export function ContactForm({ locale = "en" }: { locale?: Locale }) {
       </label>
       <label className="label">
         {c.contact.fields.artwork}
-        <input className="field" name="artworkReference" />
+        <input className="field" name="artworkReference" defaultValue={artworkReference} />
       </label>
       <label className="label">
         {c.contact.fields.message}

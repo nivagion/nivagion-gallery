@@ -12,13 +12,13 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  searchParams: Promise<{ sent?: string }>;
+  searchParams: Promise<{ sent?: string; artwork?: string }>;
 };
 
 export default async function ContactPage({ searchParams }: Props) {
   const locale = await getLocale();
   const c = t(locale);
-  const [{ sent }, rawSettings] = await Promise.all([searchParams, getSiteSettings()]);
+  const [{ sent, artwork }, rawSettings] = await Promise.all([searchParams, getSiteSettings()]);
   const settings = localizedSettings(rawSettings, locale);
   return (
     <>
@@ -40,7 +40,7 @@ export default async function ContactPage({ searchParams }: Props) {
             <p className="mt-4 text-[#084A24]">{c.contact.receivedText}</p>
           </div>
         ) : (
-          <ContactForm locale={locale} />
+          <ContactForm locale={locale} artworkReference={artwork} />
         )}
       </main>
       <SiteFooter settings={settings} />

@@ -5,10 +5,9 @@ import { ArtworkGrid } from "../../../components/public/ArtworkGrid";
 import { ArtworkImageFrame } from "../../../components/public/ArtworkImageFrame";
 import { SiteFooter } from "../../../components/public/SiteFooter";
 import { SiteHeader } from "../../../components/public/SiteHeader";
-import { StatusBadge } from "../../../components/public/StatusBadge";
 import { getAdjacentArtworks, getArtworkBySlug } from "../../../lib/db/artworks";
 import { getSiteSettings } from "../../../lib/db/settings";
-import { formatDimensions, formatMoney } from "../../../lib/format";
+import { formatDimensions } from "../../../lib/format";
 import { imageUrl } from "../../../lib/images";
 import { getLocale, localizedSettings, t } from "../../../lib/i18n";
 import { canonical, siteConfig } from "../../../lib/site";
@@ -44,7 +43,6 @@ export default async function ArtworkPage({ params }: Props) {
   const [rawSettings, adjacent] = await Promise.all([getSiteSettings(), getAdjacentArtworks(artwork)]);
   const settings = localizedSettings(rawSettings, locale);
   const primary = artwork.images.find((image) => image.is_primary) ?? artwork.images[0];
-  const canPurchase = artwork.status === "available";
   const title = publicArtworkTitle(artwork.title);
 
   const structuredData = {
@@ -55,13 +53,7 @@ export default async function ArtworkPage({ params }: Props) {
     artform: "Original artwork",
     creator: { "@type": "Person", name: siteConfig.name },
     image: primary ? canonical(imageUrl(primary.object_key)) : undefined,
-    offers: {
-      "@type": "Offer",
-      price: artwork.price_cents ? artwork.price_cents / 100 : undefined,
-      priceCurrency: artwork.currency,
-      availability: canPurchase ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
-      url: canonical(`/works/${artwork.slug}`),
-    },
+    url: canonical(`/works/${artwork.slug}`),
   };
 
   return (
@@ -87,28 +79,21 @@ export default async function ArtworkPage({ params }: Props) {
             ) : null}
           </div>
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <div className="flex items-center gap-3">
-              <StatusBadge status={artwork.status} locale={locale} />
-              <span className="text-sm text-[#084A24]">{c.common.originalNotPrint}</span>
-            </div>
+            <span className="text-sm text-[#084A24]">{c.common.originalNotPrint}</span>
             {title ? <h1 className="editorial-title mt-6 text-5xl">{title}</h1> : null}
             <dl className="mt-8 grid gap-4 border-y border-[#084A24]/25 py-6 text-sm">
+              {artwork.year ? <Detail label={c.artwork.year} value={String(artwork.year)} /> : null}
               <Detail label={c.artwork.medium} value={artwork.medium} />
               <Detail label={c.artwork.surface} value={artwork.surface ?? c.artwork.defaultSurface} />
               <Detail label={c.artwork.dimensions} value={artwork.width_cm && artwork.height_cm ? formatDimensions(artwork.width_cm, artwork.height_cm) : c.artwork.defaultDimensions} />
-              <Detail label={c.artwork.price} value={formatMoney(artwork.price_cents, artwork.currency, locale)} />
             </dl>
             {artwork.description ? <p className="mt-6 leading-8 text-[#04261E]">{artwork.description}</p> : null}
-            <p className="mt-6 text-sm leading-6 text-[#084A24]">{settings.defaultShippingMessage}</p>
-            {canPurchase ? (
-              <Link href={`/checkout/${artwork.slug}`} className="button mt-8 w-full">
-                {c.artwork.purchase}
-              </Link>
-            ) : (
-              <button className="button mt-8 w-full opacity-60" disabled>
-                {c.artwork.unavailable}
-              </button>
-            )}
+            <Link
+              href={{ pathname: "/contact", query: { artwork: title || artwork.slug } }}
+              className="button mt-8 w-full"
+            >
+              {c.artwork.purchase}
+            </Link>
             <div className="mt-8 flex justify-between gap-4 text-sm underline underline-offset-4">
               {adjacent.previous ? <Link href={`/works/${adjacent.previous.slug}`}>{c.artwork.previous}</Link> : <span />}
               {adjacent.next ? <Link href={`/works/${adjacent.next.slug}`}>{c.artwork.next}</Link> : <span />}

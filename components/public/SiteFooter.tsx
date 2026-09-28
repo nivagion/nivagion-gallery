@@ -22,8 +22,9 @@ export async function SiteFooter({ settings }: { settings: SiteSettings }) {
             {settings.contactEmail}
           </a>
         </div>
-        <div className="grid gap-3 text-sm text-[#04261E] sm:grid-cols-2 sm:gap-x-8">
-          <Link href="/shipping-and-returns">{c.nav.shipping}</Link>
+        <div className="grid gap-3 text-sm text-[#04261E] sm:grid-cols-3 sm:gap-x-8">
+          <Link href="/about">{c.nav.about}</Link>
+          <Link href="/contact">{c.nav.contact}</Link>
           <Link href="/privacy">{c.nav.privacy}</Link>
         </div>
       </div>

@@ -5,7 +5,10 @@ export function GET(request: Request) {
   const url = new URL(request.url);
   const locale = url.searchParams.get("locale") === "hr" ? "hr" : "en";
   const next = safeNext(url.searchParams.get("next"));
-  const response = NextResponse.redirect(new URL(next, url.origin));
+  const response = new NextResponse(null, {
+    status: 307,
+    headers: { Location: next },
+  });
   response.cookies.set("nivagion_locale", locale satisfies Locale, {
     path: "/",
     maxAge: 60 * 60 * 24 * 365,

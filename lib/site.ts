@@ -8,8 +8,8 @@ export const siteConfig = {
   primaryMedia: "marker drawings and spray-paint",
   currentContactEmail: "artist@example.com",
   defaultCurrency: "EUR",
-  defaultLocale: "en-HR",
-  description: "I make various marker drawings and spray paintings.",
+  defaultLocale: "hr-HR",
+  description: "Izrađujem razne crteže markerima i spray-paint radove.",
 };
 
 export const defaultSiteSettings: SiteSettings = {
@@ -18,14 +18,11 @@ export const defaultSiteSettings: SiteSettings = {
   contactEmail: siteConfig.currentContactEmail,
   homepageIntroduction: "Marker drawings and spray-paint. Originals only.",
   homepageIntroductionHr: "Crteži markerima i spray-paint radovi. Samo originali.",
-  artistBiography: "I'm Leo. I draw for fun and sell the pieces I want to let go.",
-  artistBiographyHr:
-    "Ja sam Leo. Crtam iz gušta i prodajem radove koje želim pustiti dalje.",
+  artistBiography: "",
+  artistBiographyHr: "",
   studioLocationWording: "Croatia",
-  defaultShippingMessage:
-    "I plan to ship with Hrvatska Posta. Message me if you have questions.",
-  defaultShippingMessageHr:
-    "Za slanje planiram koristiti Hrvatsku Poštu. Pošalji mi poruku ako imaš pitanje.",
+  defaultShippingMessage: "If a work interests you, send me a message and we can talk about it.",
+  defaultShippingMessageHr: "Ako te zanima neki rad, pošalji mi poruku pa možemo razgovarati.",
   croatianShippingCents: 0,
   internationalShippingMode: "",
   announcementText: "",

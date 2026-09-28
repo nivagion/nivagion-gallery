@@ -1,10 +1,8 @@
 import Link from "next/link";
 import type { ArtworkWithImages } from "../../lib/types";
-import { formatMoney } from "../../lib/format";
 import type { Locale } from "../../lib/i18n-copy";
 import { t } from "../../lib/i18n-copy";
 import { ArtworkImageFrame, artworkOrientation } from "./ArtworkImageFrame";
-import { StatusBadge } from "./StatusBadge";
 import { publicArtworkTitle } from "../../lib/batch-artworks";
 
 export function ArtworkGrid({ artworks, locale = "en" }: { artworks: ArtworkWithImages[]; locale?: Locale }) {
@@ -37,17 +35,13 @@ export function ArtworkGrid({ artworks, locale = "en" }: { artworks: ArtworkWith
                 <div className="aspect-[4/5] w-full bg-[#F26716]/20" aria-label="No image uploaded" />
               )}
             </div>
-            <div className="mt-4 flex min-h-28 items-start justify-between gap-4">
+            <div className="mt-4 min-h-20">
               <div>
-                <div className="mb-3">
-                  <StatusBadge status={artwork.status} locale={locale} />
-                </div>
                 {title ? <h2 className="editorial-title text-xl">{title}</h2> : null}
                 <p className="mt-1 text-sm text-[#084A24]">
                   {artwork.medium} · {c.common.originalNotPrint}
                 </p>
               </div>
-              <p className="whitespace-nowrap text-sm">{formatMoney(artwork.price_cents, artwork.currency, locale)}</p>
             </div>
           </Link>
         );

@@ -24,16 +24,6 @@ export function WorkSortForm({ locale = "en" }: { locale?: Locale }) {
         <select className="field min-w-44" defaultValue={search.get("sort") ?? "manual"} onChange={(event) => update("sort", event.target.value)}>
           <option value="manual">{c.works.custom}</option>
           <option value="newest">{c.works.newest}</option>
-          <option value="price-asc">{c.works.low}</option>
-          <option value="price-desc">{c.works.high}</option>
-        </select>
-      </label>
-      <label className="label w-full sm:w-auto">
-        {c.works.filter}
-        <select className="field min-w-44" defaultValue={search.get("availability") ?? "all"} onChange={(event) => update("availability", event.target.value)}>
-          <option value="all">{c.works.all}</option>
-          <option value="available">{c.works.available}</option>
-          <option value="unavailable">{c.works.unavailable}</option>
         </select>
       </label>
     </div>

@@ -14,22 +14,17 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  searchParams: Promise<{ sort?: string; availability?: string }>;
+  searchParams: Promise<{ sort?: string }>;
 };
 
 export default async function WorksPage({ searchParams }: Props) {
   const params = await searchParams;
   const locale = await getLocale();
   const c = t(locale);
-  const sort = ["manual", "newest", "price-asc", "price-desc"].includes(params.sort ?? "")
-    ? (params.sort as "manual" | "newest" | "price-asc" | "price-desc")
+  const sort = ["manual", "newest"].includes(params.sort ?? "")
+    ? (params.sort as "manual" | "newest")
     : "manual";
-  const availability = params.availability === "sold"
-    ? "unavailable"
-    : ["all", "available", "unavailable"].includes(params.availability ?? "")
-      ? (params.availability as "all" | "available" | "unavailable")
-      : "all";
-  const [rawSettings, artworks] = await Promise.all([getSiteSettings(), listPublicArtworks({ sort, availability })]);
+  const [rawSettings, artworks] = await Promise.all([getSiteSettings(), listPublicArtworks({ sort })]);
   const settings = localizedSettings(rawSettings, locale);
 
   return (
