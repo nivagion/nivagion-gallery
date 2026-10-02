@@ -24,10 +24,10 @@ export const copy = {
     },
     status: {
       draft: "draft",
-      available: "current collection",
-      reserved: "gallery work",
-      sold: "archive",
-      not_available: "archive",
+      available: "available",
+      reserved: "not available",
+      sold: "not available",
+      not_available: "not available",
       archived: "archived",
     } satisfies Record<ArtworkStatus, string>,
     home: {
@@ -164,10 +164,10 @@ export const copy = {
     },
     status: {
       draft: "skica",
-      available: "trenutna kolekcija",
-      reserved: "rad u galeriji",
-      sold: "arhiva",
-      not_available: "arhiva",
+      available: "dostupno",
+      reserved: "nije dostupno",
+      sold: "nije dostupno",
+      not_available: "nije dostupno",
       archived: "arhivirano",
     } satisfies Record<ArtworkStatus, string>,
     home: {

@@ -4,6 +4,7 @@ import type { Locale } from "../../lib/i18n-copy";
 import { t } from "../../lib/i18n-copy";
 import { ArtworkImageFrame, artworkOrientation } from "./ArtworkImageFrame";
 import { publicArtworkTitle } from "../../lib/batch-artworks";
+import { StatusBadge } from "./StatusBadge";
 
 export function ArtworkGrid({ artworks, locale = "en" }: { artworks: ArtworkWithImages[]; locale?: Locale }) {
   const c = t(locale);
@@ -38,8 +39,10 @@ export function ArtworkGrid({ artworks, locale = "en" }: { artworks: ArtworkWith
             <div className="mt-4 min-h-20">
               <div>
                 {title ? <h2 className="editorial-title text-xl">{title}</h2> : null}
-                <p className="mt-1 text-sm text-[#084A24]">
-                  {artwork.medium} · {c.common.originalNotPrint}
+                <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-2 text-sm text-[#084A24]">
+                  <span>{artwork.medium} · {c.common.originalNotPrint}</span>
+                  <span aria-hidden>·</span>
+                  <StatusBadge status={artwork.status} locale={locale} />
                 </p>
               </div>
             </div>

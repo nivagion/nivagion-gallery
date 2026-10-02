@@ -11,11 +11,13 @@ test("homepage defaults to Croatian and exposes featured art", async ({ page }) 
   await expect(page.getByText(/cijena|prodano|prodaja/i)).toHaveCount(0);
 });
 
-test("works page presents artworks without sales language", async ({ page }) => {
+test("works page displays each artwork's localized status", async ({ page }) => {
   await page.goto("/works");
   await expect(page.getByRole("heading", { name: "Radovi" })).toBeVisible();
   await expect(page.getByText("DEMO: Archive Piece")).toBeVisible();
-  await expect(page.getByText(/cijena|prodano|prodaja/i)).toHaveCount(0);
+  await expect(page.getByText("dostupno", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("nije dostupno", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(/cijena|prodaja/i)).toHaveCount(0);
 });
 
 test("English artwork inquiry opens the contact form without sales details", async ({ page }) => {
