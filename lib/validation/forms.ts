@@ -112,8 +112,6 @@ export const batchArtworkDefaultsSchema = artworkFormSchema.pick({
   currency: true,
   status: true,
   revolut_payment_url: true,
-}).extend({
-  is_published: z.coerce.boolean().default(false),
 });
 
 export const orderUpdateSchema = z.object({

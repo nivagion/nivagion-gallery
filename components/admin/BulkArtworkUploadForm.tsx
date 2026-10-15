@@ -119,7 +119,6 @@ export function BulkArtworkUploadForm() {
       ]) {
         body.set(name, source.get(name) ?? "");
       }
-      if (source.has("is_published")) body.set("is_published", "on");
       for (const item of items) {
         body.append("files", item.file, item.processed.filename);
         body.append("altTexts", item.altText);
@@ -301,6 +300,7 @@ export function BulkArtworkUploadForm() {
                 </option>
               ))}
             </select>
+            <span className="text-sm font-normal text-[#084A24]">Draft stays private. Any other status publishes the artworks when created.</span>
           </label>
         </div>
         <label className="label">
@@ -310,10 +310,6 @@ export function BulkArtworkUploadForm() {
         <label className="label">
           Revolut payment URL
           <input className="field" name="revolut_payment_url" type="url" />
-        </label>
-        <label className="flex items-center gap-3">
-          <input type="checkbox" name="is_published" />
-          Publish created artworks
         </label>
       </section>
 

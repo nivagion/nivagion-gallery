@@ -63,7 +63,6 @@ describe("bulk artwork upload route", () => {
     form.set("medium", "Marker");
     form.set("status", "available");
     form.set("currency", "EUR");
-    form.set("is_published", "on");
     form.append("files", new File([new Uint8Array([1])], "one.webp", { type: "image/webp" }));
     form.append("files", new File([new Uint8Array([2])], "two.webp", { type: "image/webp" }));
     form.append("altTexts", "One");
@@ -85,6 +84,7 @@ describe("bulk artwork upload route", () => {
       title: "Unnamed artwork",
       slug: "unnamed-artwork-art-1",
       medium: "Marker",
+      status: "available",
       is_published: true,
     }));
     expect(mocks.insertArtworkImage).toHaveBeenNthCalledWith(2, expect.objectContaining({
@@ -94,6 +94,28 @@ describe("bulk artwork upload route", () => {
       alt_text: "Two",
       is_primary: true,
       file_type: "image/webp",
+    }));
+  });
+
+  it.each([
+    ["not_available", true],
+    ["draft", false],
+  ] as const)("creates %s artworks with publication set to %s", async (status, isPublished) => {
+    const form = new FormData();
+    form.set("medium", "Marker");
+    form.set("status", status);
+    form.set("is_published", "on");
+    form.append("files", new File([new Uint8Array([1])], "one.webp", { type: "image/webp" }));
+
+    const response = await POST(new Request("https://example.test/admin/api/artworks/bulk", {
+      method: "POST",
+      body: form,
+    }));
+
+    expect(response.status).toBe(200);
+    expect(mocks.upsertArtwork).toHaveBeenCalledWith(expect.objectContaining({
+      status,
+      is_published: isPublished,
     }));
   });
 });

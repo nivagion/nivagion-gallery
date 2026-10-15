@@ -33,7 +33,6 @@ export async function POST(request: Request) {
     price_cents: formString(formData, "price_eur"),
     currency: formString(formData, "currency") || "EUR",
     status: formData.get("status") ?? "draft",
-    is_published: formData.has("is_published"),
     revolut_payment_url: formString(formData, "revolut_payment_url"),
   });
   if (!parsed.success) {
@@ -77,7 +76,7 @@ export async function POST(request: Request) {
         currency: parsed.data.currency,
         status: parsed.data.status,
         is_featured: false,
-        is_published: parsed.data.status !== "draft" && parsed.data.is_published,
+        is_published: parsed.data.status !== "draft",
         published_at: null,
         reserved_until: null,
         revolut_payment_url: parsed.data.revolut_payment_url,
