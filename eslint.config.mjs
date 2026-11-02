@@ -5,7 +5,7 @@ const config = [
   ...nextVitals,
   ...nextTypescript,
   {
-    ignores: [".next/**", ".open-next/**", "node_modules/**"],
+    ignores: [".next/**", ".open-next/**", ".wrangler/**", "node_modules/**"],
   },
   {
     rules: {

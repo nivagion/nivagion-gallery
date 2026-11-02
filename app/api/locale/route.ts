@@ -13,6 +13,8 @@ export function GET(request: Request) {
     path: "/",
     maxAge: 60 * 60 * 24 * 365,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
   });
   return response;
 }

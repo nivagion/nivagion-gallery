@@ -19,10 +19,11 @@
     "db:seed:local": "wrangler d1 execute nivagion-gallery-db --local --file=./migrations/0002_seed_demo.sql"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "latest",
+    "@opennextjs/cloudflare": "^1.20.15",
     "clsx": "^2.1.1",
+    "jose": "^6.2.15",
     "lucide-react": "^0.536.0",
-    "next": "latest",
+    "next": "^16.4.3",
     "react": "latest",
     "react-dom": "latest",
     "zod": "^3.25.0"
@@ -36,7 +37,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "^9.32.0",
-    "eslint-config-next": "latest",
+    "eslint-config-next": "^16.4.3",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

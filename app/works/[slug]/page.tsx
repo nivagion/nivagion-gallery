@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArtworkGrid } from "../../../components/public/ArtworkGrid";
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArtworkPage({ params }: Props) {
   const { slug } = await params;
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   const locale = await getLocale();
   const c = t(locale);
   const artwork = await getArtworkBySlug(slug);
@@ -60,7 +62,7 @@ export default async function ArtworkPage({ params }: Props) {
     <>
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+        <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="grid gap-4">
             {primary ? (

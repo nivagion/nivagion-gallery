@@ -7,6 +7,8 @@ export type Env = {
   NEXT_PUBLIC_MEDIA_BASE_URL?: string;
   ADMIN_EMAIL?: string;
   ADMIN_DEV_BYPASS?: string;
+  CF_ACCESS_TEAM_DOMAIN?: string;
+  CF_ACCESS_AUD?: string;
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
 };
@@ -20,6 +22,8 @@ export function getEnv(): Env {
       NEXT_PUBLIC_MEDIA_BASE_URL: process.env.NEXT_PUBLIC_MEDIA_BASE_URL,
       ADMIN_EMAIL: process.env.ADMIN_EMAIL,
       ADMIN_DEV_BYPASS: process.env.ADMIN_DEV_BYPASS,
+      CF_ACCESS_TEAM_DOMAIN: process.env.CF_ACCESS_TEAM_DOMAIN,
+      CF_ACCESS_AUD: process.env.CF_ACCESS_AUD,
       TURNSTILE_SITE_KEY: process.env.TURNSTILE_SITE_KEY,
       TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
     };

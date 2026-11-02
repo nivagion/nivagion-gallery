@@ -1,5 +1,30 @@
 import { expect, test } from "@playwright/test";
 
+test("security headers allow hydration without CSP violations", async ({ page, request }) => {
+  const violations: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && /content security policy|refused to/i.test(message.text())) violations.push(message.text());
+  });
+  const response = await request.get("/");
+  expect(response.headers()["x-frame-options"]).toBe("DENY");
+  expect(response.headers()["x-content-type-options"]).toBe("nosniff");
+  expect(response.headers()["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+  if (process.env.EXPECT_PRODUCTION_CSP === "true") {
+    const policy = response.headers()["content-security-policy"];
+    expect(policy).toContain("frame-ancestors 'none'");
+    const nonce = policy.match(/script-src[^;]*'nonce-([^']+)'/)?.[1];
+    expect(nonce).toBeTruthy();
+    const html = await response.text();
+    const scripts = [...html.matchAll(/<script\b[^>]*>/g)].map((match) => match[0]);
+    expect(scripts.length).toBeGreaterThan(0);
+    for (const script of scripts) expect(script).toContain(`nonce="${nonce}"`);
+  }
+  await page.goto("/");
+  await page.getByRole("navigation").getByRole("link", { name: "Radovi", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Radovi" })).toBeVisible();
+  expect(violations).toEqual([]);
+});
+
 test("homepage defaults to Croatian and exposes featured art", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("lang", "hr");
