@@ -3,5 +3,7 @@ NEXT_PUBLIC_MEDIA_BASE_URL=""
 ADMIN_EMAIL="admin@example.com"
 # Local-only admin bypass. Keep this false in deployed environments.
 ADMIN_DEV_BYPASS="true"
+CF_ACCESS_TEAM_DOMAIN="your-team.cloudflareaccess.com"
+CF_ACCESS_AUD="your-access-application-audience"
 TURNSTILE_SITE_KEY=""
 TURNSTILE_SECRET_KEY=""

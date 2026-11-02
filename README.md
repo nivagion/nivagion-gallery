@@ -110,6 +110,8 @@ The tracked `wrangler.jsonc` defines the Worker, D1 binding, R2 binding, and cur
 5. Protect `/admin*` with a Cloudflare Access policy for the same administrator identity.
 6. Run `npm run deploy`.
 
+For HTTPS, canonical redirects, HSTS, CSP, and Access verification, follow [the production security checklist](docs/production-security.md) before and after deployment.
+
 Do not commit real credentials, exported database data, or production `.dev.vars` files.
 
 ## Project Structure

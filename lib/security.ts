@@ -2,8 +2,10 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { siteConfig } from "./site";
 import { getEnv } from "./db/client";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 
 const formHits = new Map<string, number[]>();
+const accessKeys = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
 
 export async function requireAdmin() {
   const headerList = await headers();
@@ -15,8 +17,29 @@ export async function requireAdmin() {
     (env.ADMIN_DEV_BYPASS === "true" || process.env.ADMIN_DEV_BYPASS === "true");
 
   if (devBypass) return { email: expectedEmail, mode: "development" as const };
-  if (!accessEmail) notFound();
-  if (accessEmail.toLowerCase() !== expectedEmail.toLowerCase()) notFound();
+  const token = headerList.get("cf-access-jwt-assertion");
+  const teamDomain = env.CF_ACCESS_TEAM_DOMAIN;
+  const audience = env.CF_ACCESS_AUD;
+  if (!token || !teamDomain || !audience || !accessEmail) notFound();
+  let verifiedEmail: string | undefined;
+  try {
+    const issuer = `https://${teamDomain}`;
+    let jwks = accessKeys.get(issuer);
+    if (!jwks) {
+      jwks = createRemoteJWKSet(new URL(`${issuer}/cdn-cgi/access/certs`));
+      accessKeys.set(issuer, jwks);
+    }
+    const { payload } = await jwtVerify(token, jwks, {
+      issuer,
+      audience,
+      algorithms: ["RS256"],
+    });
+    verifiedEmail = typeof payload.email === "string" ? payload.email : undefined;
+  } catch {
+    notFound();
+  }
+  if (!verifiedEmail || verifiedEmail.toLowerCase() !== expectedEmail.toLowerCase() ||
+      accessEmail.toLowerCase() !== verifiedEmail.toLowerCase()) notFound();
   return { email: accessEmail, mode: "cloudflare-access" as const };
 }
 

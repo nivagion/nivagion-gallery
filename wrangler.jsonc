@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "atelier-nivagion",
-	"main": ".open-next/worker.js",
+	"main": "custom-worker.ts",
 	"compatibility_date": "2026-08-04",
 	"compatibility_flags": [
 		"nodejs_compat"
@@ -11,7 +11,8 @@
 	},
 	"assets": {
 		"directory": ".open-next/assets",
-		"binding": "ASSETS"
+		"binding": "ASSETS",
+		"run_worker_first": true
 	},
 	"routes": [
 		{
@@ -41,6 +42,8 @@
 		"SITE_URL": "https://nivagion.com",
 		"NEXT_PUBLIC_MEDIA_BASE_URL": "https://media.nivagion.com",
 		"ADMIN_DEV_BYPASS": "false",
+		"CF_ACCESS_TEAM_DOMAIN": "falling-wildflower-a4f0.cloudflareaccess.com",
+		"CF_ACCESS_AUD": "ba3874e81adfe227f00d1389e79bb2010821ebac2b69c6f91c3047f810ef93a2",
 		"TURNSTILE_SITE_KEY": "",
 		"TURNSTILE_SECRET_KEY": ""
 	}
